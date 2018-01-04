@@ -229,7 +229,7 @@
     if (_tableView == nil) {
         _tableView = [[UITableView alloc] init];
         [_tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-        [_tableView setBackgroundColor:[UIColor clearColor]];
+        [_tableView setBackgroundColor:[UIColor whiteColor]];
         [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 10)]];
         [_tableView setDelegate:self];
         [_tableView setDataSource:self];

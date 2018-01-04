@@ -32,7 +32,7 @@
                 [imagePickerController setSourceType:UIImagePickerControllerSourceTypeCamera];
             }
             else {
-                [TLUIUtility showAlertWithTitle:@"错误" message:@"相机初始化失败"];
+                [TLUIUtility showAlertWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"CAMERA_INITIALIZATION_FAILED", nil)];
                 return;
             }
         }
@@ -90,8 +90,11 @@
 //                                      @"headerIcon":user.avatarURL ?: @"",
 //                                      @"isFriend":@(YES)
 //                                      }]; // TODO: handle non-friend chat.
-    
-    [[TLUIManager sharedUIManager]  openUserDetails:user navigationController:self.navigationController];
+    [[HSNetworkAdapter adapter] getUserDetailInfoWithUserId:user.userID finishBlock:^(HSStudentUserInfo *studUserInfo) {
+        [HSUIManager openUserDetails:studUserInfo navigationController:self.navigationController];
+    } failed:^(NSError *error) {
+        
+    }];
     
 }
 

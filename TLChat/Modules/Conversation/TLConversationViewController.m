@@ -21,7 +21,7 @@
 
 
 
-@interface TLConversationViewController ()
+@interface TLConversationViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UIImageView *scrollTopView;
 
@@ -29,17 +29,16 @@
 
 @property (nonatomic, strong) TLAddMenuView *addMenuView;
 
-
 @end
 
 @implementation TLConversationViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.navigationItem setTitle:@"聊天"];
+    //[self.navigationItem setTitle:@"1234"];
+
     
     [self p_initUI];        // 初始化界面UI
-    [self registerCellClass];
     
     [[TLMessageManager sharedInstance] setConversationDelegate:self];
    
@@ -62,7 +61,7 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newChatMessageArrive:) name:@"NewChatMessageReceived" object:nil];
     
-    self.definesPresentationContext = YES;
+    //self.definesPresentationContext = YES;
 }
 
 - (void)newChatMessageArrive:(NSNotification*)notificaion {
@@ -107,6 +106,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    //[self.navigationController setNavigationBarHidden:YES animated:YES];
     
     [self updateConversationData];  // to update conversation lastes message whenver back to this screen
 
@@ -119,13 +119,7 @@
         [self.addMenuView dismiss];
     }
     
-//    if (self.client) {
-//        [self.client unsubscribeFromQuery:self.query];
-//        [self.client disconnect];
-//        self.client = nil;
-//
-//        _currentKeys = nil;
-//    }
+
 }
 
 #pragma mark - Event Response
@@ -147,10 +141,10 @@
         case AFNetworkReachabilityStatusReachableViaWiFi:
         case AFNetworkReachabilityStatusReachableViaWWAN:
         case AFNetworkReachabilityStatusUnknown:
-            [self.navigationItem setTitle:@"聊天"];
+            [self.navigationItem setTitle:NSLocalizedString(@"MESSAGE", nil)];
             break;
         case AFNetworkReachabilityStatusNotReachable:
-            [self.navigationItem setTitle:@"聊天(未连接)"];
+            [self.navigationItem setTitle:NSLocalizedString(@"MESSAGE_UNCONNECTED", nil)];
             break;
         default:
             break;
@@ -160,21 +154,33 @@
 #pragma mark - Private Methods -
 - (void)p_initUI
 {
-    self.edgesForExtendedLayout = UIRectEdgeNone;
-    [self.tableView setBackgroundColor:[UIColor whiteColor]];
-    //    [self.tableView setTableHeaderView:self.searchController.searchBar]; //TODO: change to search in chat, not in all friends.
-    [self.tableView addSubview:self.scrollTopView];
-    [self.scrollTopView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.mas_equalTo(self.tableView);
-        make.bottom.mas_equalTo(self.tableView.mas_top).mas_offset(-35);
-    }];
-
-    // TODO: fututure features
-//    UIBarButtonItem *rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"nav_add"] style:UIBarButtonItemStyleDone target:self action:@selector(rightBarButtonDown:)];
-//    [self.navigationItem setRightBarButtonItem:rightBarButtonItem];
+    [self.view addSubview:self.tableView];
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    [self.navigationController.view setBackgroundColor:[UIColor whiteColor]];
+    
+    if (@available(iOS 11.0, *)) {
+        self.navigationController.navigationBar.prefersLargeTitles = YES;
+        [self.navigationController.navigationBar setLargeTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor blackColor], NSFontAttributeName:[UIFont fontWithName:@"Helvetica-Bold" size:24.0f]}];
+    } else {
+        // Fallback on earlier versions
+    }
+    self.title = NSLocalizedString(@"MESSAGE", nil);
 }
 
-
+- (UITableView *)tableView {
+    if (!_tableView) {
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, self.view.frame.size.height - 113.0f)];
+        [self registerCellClass];
+        [_tableView setBackgroundColor:[UIColor whiteColor]];
+        [_tableView setDelegate:self];
+        [_tableView setDataSource:self];
+        [_tableView setTableFooterView:[UIView new]];
+        [_tableView setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
+        [_tableView setSeparatorInset:UIEdgeInsetsZero];
+        
+    }
+    return _tableView;
+}
 
 #pragma mark - Getter -
 - (TLSearchController *) searchController
@@ -213,6 +219,7 @@
         [_addMenuView setDelegate:self];
     }
     return _addMenuView;
+    //return nil;
 }
 
 @end

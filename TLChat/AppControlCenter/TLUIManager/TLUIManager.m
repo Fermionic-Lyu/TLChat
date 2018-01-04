@@ -9,7 +9,6 @@
 #import "TLUIManager.h"
 #import "TLChatViewController.h"
 #import "TLFriendDetailViewController.h"
-#import "TLFriendHelper.h"
 
 @implementation TLUIManager
 
@@ -24,11 +23,10 @@ static TLUIManager *uiManager = nil;
     return uiManager;
 }
 
-- (void)openChatDialogWithUser:(NSString *)userId fromNavigationController:(UINavigationController *)navigationController  context:(NSString*)context {
+- (void)openChatDialogWithUser:(NSString *)userId fromNavigationController:(UINavigationController *)navigationController {
     TLChatViewController * chatVC = [navigationController findViewController:@"TLChatViewController"];
     if (chatVC) {
         if ([userId isEqualToString:[chatVC.partner chat_userID]]) {
-            chatVC.title = context;
             [navigationController popToViewControllerWithClassName:@"TLChatViewController" animated:YES];
             return;
         }
@@ -38,11 +36,11 @@ static TLUIManager *uiManager = nil;
     TLChatViewController * vc = [TLChatViewController new];
     TLUser * partner = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:userId];
     vc.partner = (id<TLChatUserProtocol>)partner;
-    vc.title = context;
+    
     [navigationController pushViewController:vc animated:YES];
 }
 
-- (void)openChatDialog:(NSString *)dialogKey navigationController:(UINavigationController*)navigationController{
+- (void)openChatDialog:(NSString *)dialogKey navigationController:(UINavigationController*)navigationController {
     
     
     
@@ -50,7 +48,6 @@ static TLUIManager *uiManager = nil;
     TLChatViewController * chatVC = [navigationController findViewController:@"TLChatViewController"];
     if (chatVC) {
         if ([dialogKey isEqualToString:chatVC.conversationKey]) {
-            
             [navigationController popToViewControllerWithClassName:@"TLChatViewController" animated:YES];
             return;
         }
@@ -60,19 +57,17 @@ static TLUIManager *uiManager = nil;
     TLChatViewController * vc = [TLChatViewController new];
     
     vc.conversationKey = dialogKey;
-
+    
     [navigationController pushViewController:vc animated:YES];
  
 }
 
 - (void)openUserDetails:(TLUser *)user navigationController:(UINavigationController*)navigationController {
-
-    // TODO: find better way to allow app use different style to open user details.
     
-//    TLFriendDetailViewController *detailVC = [[TLFriendDetailViewController alloc] init];
-//    [detailVC setUser:user];
-//    [detailVC setHidesBottomBarWhenPushed:YES];
-//    [navigationController pushViewController:detailVC animated:YES];
+    TLFriendDetailViewController *detailVC = [[TLFriendDetailViewController alloc] init];
+    [detailVC setUser:user];
+    [detailVC setHidesBottomBarWhenPushed:YES];
+    [navigationController pushViewController:detailVC animated:YES];
 }
 
 @end

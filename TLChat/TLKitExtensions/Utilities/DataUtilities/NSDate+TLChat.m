@@ -16,7 +16,7 @@
         return self.formatHM;
     }
     else if ([self isYesterday]) {      // 昨天
-        return [NSString stringWithFormat:@"昨天 %@", self.formatHM];
+        return [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"YESTERDAY", nil),self.formatHM];
     }
     else if ([self isThisWeek]){        // 本周
         return [NSString stringWithFormat:@"%@ %@", self.formatWeekday, self.formatHM];
@@ -32,7 +32,7 @@
         return self.formatHM;
     }
     else if ([self isYesterday]) {      // 昨天
-        return @"昨天";
+        return NSLocalizedString(@"YESTERDAY", nil);
     }
     else if ([self isThisWeek]){        // 本周
         return self.formatWeekday;

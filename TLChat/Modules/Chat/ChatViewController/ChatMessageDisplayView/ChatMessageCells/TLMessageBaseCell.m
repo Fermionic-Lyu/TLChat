@@ -189,9 +189,11 @@
 {
     if (_avatarButton == nil) {
         _avatarButton = [[UIButton alloc] init];
-        [_avatarButton.layer setMasksToBounds:YES];
-        [_avatarButton.layer setBorderWidth:BORDER_WIDTH_1PX];
-        [_avatarButton.layer setBorderColor:[UIColor colorWithWhite:0.7 alpha:1.0].CGColor];
+        //[_avatarButton.layer setMasksToBounds:YES];
+        [_avatarButton setClipsToBounds:YES];
+        [_avatarButton.layer setCornerRadius:20.0f];
+        //[_avatarButton.layer setBorderWidth:BORDER_WIDTH_1PX];
+        //[_avatarButton.layer setBorderColor:[UIColor colorWithWhite:0.7 alpha:1.0].CGColor];
         [_avatarButton addTarget:self action:@selector(avatarButtonDown:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _avatarButton;

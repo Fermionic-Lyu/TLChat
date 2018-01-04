@@ -26,8 +26,8 @@
 - (id)initWithFrame:(CGRect)frame
 {
     if (self = [super initWithFrame:frame]) {
-        [self setNormalTitle:@"按住 说话"];
-        [self setHighlightTitle:@"松开 结束"];
+        [self setNormalTitle:NSLocalizedString(@"HOLD_TO_SPEAK", nil)];
+        [self setHighlightTitle:NSLocalizedString(@"RELEASE_TO_SEND", nil)];
         [self setCancelTitle:@"松开 取消"];
         [self setHighlightColor:[UIColor colorWithWhite:0.0 alpha:0.1]];
         [self.layer setMasksToBounds:YES];

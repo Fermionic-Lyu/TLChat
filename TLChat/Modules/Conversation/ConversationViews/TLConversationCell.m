@@ -12,7 +12,7 @@
 #import "NSFileManager+TLChat.h"
 #import "TLGroupDataLoader.h"
 
-#define     CONV_SPACE_X            10.0f
+#define     CONV_SPACE_X            15.0f
 #define     CONV_SPACE_Y            9.5f
 #define     REDPOINT_WIDTH          10.0f
 
@@ -25,6 +25,8 @@
 @property (nonatomic, strong) UILabel *detailLabel;
 
 @property (nonatomic, strong) UILabel *timeLabel;
+
+@property (nonatomic, strong) UILabel *firstCharacterLabel;
 
 @property (nonatomic, strong) UIImageView *remindImageView;
 
@@ -40,6 +42,7 @@
         self.leftSeparatorSpace = CONV_SPACE_X;
         
         [self.contentView addSubview:self.avatarImageView];
+        [self.avatarImageView addSubview:self.firstCharacterLabel];
         [self.contentView addSubview:self.usernameLabel];
         [self.contentView addSubview:self.detailLabel];
         [self.contentView addSubview:self.timeLabel];
@@ -56,20 +59,20 @@
 {
     _conversation = conversation;
     
-    if (conversation.avatarPath.length > 0) {
-        NSString *path = [NSFileManager pathUserAvatar:conversation.avatarPath];
-        [self.avatarImageView setImage:[UIImage imageNamed:path]];
+    switch (conversation.convType) {
+        case TLConversationTypePersonal:
+            [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:conversation.avatarURL] placeholderImage:[UIImage imageNamed:@"default_avatar"]];
+            [self.firstCharacterLabel setHidden:YES];
+            break;
+        case TLConversationTypeGroup:
+            [self.avatarImageView setImage:[[TLGroupDataLoader sharedGroupDataLoader] generateGroupAvatarWithGroupName:conversation.partnerName]];
+            [self.firstCharacterLabel setText:[conversation.partnerName substringToIndex:1]];
+            [self.firstCharacterLabel setHidden:NO];
+            break;
+        default:
+            break;
     }
-    else if (conversation.avatarURL.length > 0){
-        [self.avatarImageView tt_setImageWithURL:TLURL(conversation.avatarURL) placeholderImage:[UIImage imageNamed:DEFAULT_AVATAR_PATH]];
-    }
-    else if (conversation.convType == TLConversationTypeGroup){
-  
-        [self.avatarImageView setImage:[[TLGroupDataLoader sharedGroupDataLoader] generateGroupName:conversation.partnerID groupName:conversation.partnerName]];
-        
-    }else{
-        [self.avatarImageView setImage:[UIImage imageNamed:DEFAULT_AVATAR_PATH]]; //should be group avatar
-    }
+    
     [self.usernameLabel setText:conversation.partnerName];
     [self.detailLabel setText:conversation.content];
     [self.timeLabel setText:conversation.date.conversaionTimeInfo];
@@ -144,26 +147,26 @@
 #pragma mark - Private Methods -
 - (void)p_addMasonry
 {
-    [self.avatarImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(CONV_SPACE_X);
-        make.top.mas_equalTo(CONV_SPACE_Y);
-        make.bottom.mas_equalTo(- CONV_SPACE_Y);
-        make.width.mas_equalTo(self.avatarImageView.mas_height);
-    }];
+//    [self.avatarImageView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.mas_equalTo(CONV_SPACE_X);
+//        make.top.mas_equalTo(CONV_SPACE_Y);
+//        make.bottom.mas_equalTo(- CONV_SPACE_Y);
+//        make.width.mas_equalTo(self.avatarImageView.mas_height);
+//    }];
     
-    [self.usernameLabel setContentCompressionResistancePriority:100 forAxis:UILayoutConstraintAxisHorizontal];
-    [self.usernameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.avatarImageView.mas_right).mas_offset(CONV_SPACE_X);
-        make.top.mas_equalTo(self.avatarImageView).mas_offset(2.0);
-        make.right.mas_lessThanOrEqualTo(self.timeLabel.mas_left).mas_offset(-5);
-    }];
+//    [self.usernameLabel setContentCompressionResistancePriority:100 forAxis:UILayoutConstraintAxisHorizontal];
+//    [self.usernameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.mas_equalTo(self.avatarImageView.mas_right).mas_offset(CONV_SPACE_X);
+//        make.top.mas_equalTo(self.avatarImageView).mas_offset(2.0);
+//        make.right.mas_lessThanOrEqualTo(self.timeLabel.mas_left).mas_offset(-5);
+//    }];
     
-    [self.detailLabel setContentCompressionResistancePriority:110 forAxis:UILayoutConstraintAxisHorizontal];
-    [self.detailLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(self.avatarImageView).mas_offset(-2.0);
-        make.left.mas_equalTo(self.usernameLabel);
-        make.right.mas_lessThanOrEqualTo(self.remindImageView.mas_left);
-    }];
+//    [self.detailLabel setContentCompressionResistancePriority:110 forAxis:UILayoutConstraintAxisHorizontal];
+//    [self.detailLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.bottom.mas_equalTo(self.avatarImageView).mas_offset(-2.0);
+//        make.left.mas_equalTo(self.usernameLabel);
+//        make.right.mas_lessThanOrEqualTo(self.remindImageView.mas_left);
+//    }];
     
     [self.timeLabel setContentCompressionResistancePriority:300 forAxis:UILayoutConstraintAxisHorizontal];
     [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -187,19 +190,30 @@
 #pragma mark - Getter
 - (UIImageView *)avatarImageView
 {
-    if (_avatarImageView == nil) {
-        _avatarImageView = [[UIImageView alloc] init];
+    if (!_avatarImageView) {
+        _avatarImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15.0f, 20.0f, 40.0f, 40.0f)];
         [_avatarImageView.layer setMasksToBounds:YES];
-        [_avatarImageView.layer setCornerRadius:3.0f];
+        [_avatarImageView.layer setCornerRadius:20.0f];
     }
     return _avatarImageView;
 }
 
+- (UILabel *)firstCharacterLabel {
+    if (!_firstCharacterLabel) {
+        _firstCharacterLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 40.0f, 40.0f)];
+        [_firstCharacterLabel setTextAlignment:NSTextAlignmentCenter];
+        [_firstCharacterLabel setTextColor:[UIColor whiteColor]];
+        [_firstCharacterLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:30.0f]];
+    }
+    return _firstCharacterLabel;
+}
+
 - (UILabel *)usernameLabel
 {
-    if (_usernameLabel == nil) {
-        _usernameLabel = [[UILabel alloc] init];
-        [_usernameLabel setFont:[UIFont fontConversationUsername]];
+    if (!_usernameLabel) {
+        _usernameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70.0f, 20.0f, [UIScreen mainScreen].bounds.size.width - 140.0f, 20.0f)];
+        [_usernameLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:16.0f]];
+        [_usernameLabel setTextColor:[UIColor colorWithHexString:@"4A4A4A"]];
     }
     return _usernameLabel;
 }
@@ -207,9 +221,9 @@
 - (UILabel *)detailLabel
 {
     if (_detailLabel == nil) {
-        _detailLabel = [[UILabel alloc] init];
-        [_detailLabel setFont:[UIFont fontConversationDetail]];
-        [_detailLabel setTextColor:[UIColor colorTextGray]];
+        _detailLabel = [[UILabel alloc] initWithFrame:CGRectMake(70.0f, 40.0f, [UIScreen mainScreen].bounds.size.width - 85.0f, 20.0f)];
+        [_detailLabel setFont:[UIFont systemFontOfSize:13.0f]];
+        [_detailLabel setTextColor:[UIColor colorWithHexString:@"9B9B9B"]];
     }
     return _detailLabel;
 }

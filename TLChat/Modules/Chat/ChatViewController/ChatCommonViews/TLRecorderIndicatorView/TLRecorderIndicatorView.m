@@ -9,9 +9,9 @@
 #import "TLRecorderIndicatorView.h"
 #import <Masonry/Masonry.h>
 
-#define     STR_RECORDING       @"手指上滑，取消发送"
-#define     STR_CANCEL          @"手指松开，取消发送"
-#define     STR_REC_SHORT       @"说话时间太短"
+#define     STR_RECORDING       NSLocalizedString(@"MOVE_UP_FINGER_CANCEL_VOICE",nil)
+#define     STR_CANCEL          NSLocalizedString(@"RELEASE_CANCEL_VOICE",nil)
+#define     STR_REC_SHORT       NSLocalizedString(@"VOICE_MESSAGE_TOO_SHORT",nil)
 
 @interface TLRecorderIndicatorView ()
 

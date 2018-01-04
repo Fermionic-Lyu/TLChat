@@ -20,9 +20,8 @@
 #import <Masonry/Masonry.h>
 #import "TLMacros.h"
 
-#import "ParseLiveQuery-Swift.h"
 @import Parse;
-//@import ParseLiveQuery;
+@import ParseLiveQuery;
 @import Parse.PFQuery;
 
 @interface TLChatBaseViewController() <PFLiveQuerySubscriptionHandling>
@@ -80,7 +79,7 @@
     }
 }
 
-- (void)loadMessagesWithCompletionBlock:(void(^)(void))completionBlcok messageIDToIgnore:(NSString *)messageIDToIgnore{
+- (void)loadMessagesWithCompletionBlock:(void(^)())completionBlcok messageIDToIgnore:(NSString *)messageIDToIgnore{
     
     self.query = [PFQuery queryWithClassName:kParseClassNameMessage];
     
@@ -133,12 +132,11 @@
         return;
     }
     
-//    if (self.title == nil) {
-//        [self.navigationItem setTitle:[NSString stringWithFormat:@"%@",[_partner chat_username]]];
-//    }
+
+    [self.navigationItem setTitle:[NSString stringWithFormat:@"%@",[_partner chat_username]]];
     self.client = [[PFLiveQueryClient alloc] init];
     
-    self.subscription = (PFLiveQuerySubscription*)[self.client subscribeToQuery:self.query withHandler:self];
+    self.subscription = [self.client  subscribeToQuery:self.query withHandler:self];
     
     
 //    __weak TLChatBaseViewController * weakSelf = self;
@@ -208,7 +206,7 @@
     DLog(@"Subscribed to %@", self.conversationKey);
     
     dispatch_async(dispatch_get_main_queue(), ^{
-//        [self.navigationItem setTitle:[self.partner chat_username]];
+        [self.navigationItem setTitle:[self.partner chat_username]];
     });
 }
 
@@ -504,11 +502,7 @@
         return;
     }
     _partner = partner;
-    
-    if (self.title == nil) {
-        [self.navigationItem setTitle:[NSString stringWithFormat:@"%@",[_partner chat_username]]];
-    }
-    
+    [self.navigationItem setTitle:[_partner chat_username]];
     
 
     NSString * key = @"";
@@ -535,14 +529,14 @@
                 NSString * friendID = matches.firstObject;
                 TLUser * friend = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:friendID];
                 
-                self.partner = (id<TLChatUserProtocol>)friend;
+                self.partner = friend;
             }
         }else{
             
             // GROUP
             
             TLGroup * group = [[TLFriendHelper sharedFriendHelper] getGroupInfoByGroupID:conversationKey];
-            self.partner = (id<TLChatUserProtocol>)group;
+            self.partner = group;
         }
         
     }

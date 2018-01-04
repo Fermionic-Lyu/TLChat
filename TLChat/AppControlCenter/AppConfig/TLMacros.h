@@ -50,13 +50,11 @@ typedef void(^TLBlockRequestFailureWithErrorMessage)(NSString *errMsg);
 
 #define mark - # Default
 // 默认头像
-#define     DEFAULT_AVATAR_PATH         @"default_head"
+#define     DEFAULT_AVATAR_PATH         @"default_avatar"
 
 
 #define kParseClassNameDialog @"ChatDialog"
 #define kParseClassNameMessage @"ChatMessage"
-#define kParseUserClassAttributeAvatar @"photo"
-#define kParseUserClassAttributeNickname @"nickname"
 
 
 #define     kAKUserLoggedInNotification @"kAppDidLoginSuccessNoti"

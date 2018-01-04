@@ -23,10 +23,10 @@
 - (void)p_initTestData
 {
     TLMoreKeyboardItem *imageItem = [TLMoreKeyboardItem createByType:TLMoreKeyboardItemTypeImage
-                                                               title:@"照片"
+                                                               title:NSLocalizedString(@"GALLERY", nil)
                                                            imagePath:@"moreKB_image"];
     TLMoreKeyboardItem *cameraItem = [TLMoreKeyboardItem createByType:TLMoreKeyboardItemTypeCamera
-                                                                title:@"拍摄"
+                                                                title:NSLocalizedString(@"CAMERA", nil)
                                                             imagePath:@"moreKB_video"];
 //    TLMoreKeyboardItem *videoItem = [TLMoreKeyboardItem createByType:TLMoreKeyboardItemTypeVideo
 //                                                               title:@"小视频"

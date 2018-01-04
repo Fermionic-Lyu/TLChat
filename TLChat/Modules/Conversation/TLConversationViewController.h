@@ -9,18 +9,19 @@
 #import "TLTableViewController.h"
 #import "TLMessageManager+ConversationRecord.h"
 #import "TLFriendSearchViewController.h"
+
 @import Parse;
 @import ParseLiveQuery;
 @import Parse.PFQuery;
 
-@interface TLConversationViewController : TLTableViewController {
+@interface TLConversationViewController : UIViewController {
     NSArray * _currentKeys;
 }
 
 @property (nonatomic, strong) TLFriendSearchViewController *searchVC;
 
 @property (nonatomic, strong) NSMutableArray *data;
-
+@property (nonatomic, strong) UITableView *tableView;
 
 @property (nonatomic, strong) PFLiveQueryClient *client;
 @property (nonatomic, strong) PFQuery *query;

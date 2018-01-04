@@ -271,7 +271,8 @@
     if (_sendButton == nil) {
         _sendButton = [[UIButton alloc] init];
         [_sendButton.titleLabel setFont:[UIFont systemFontOfSize:15.0f]];
-        [_sendButton setTitle:@"  发送" forState:UIControlStateNormal];
+        [_sendButton setTitle:NSLocalizedString(@"SEND", nil) forState:UIControlStateNormal];
+        [_sendButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 8.0f, 0.0f, 0.0f)];
         [_sendButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
         [_sendButton setBackgroundColor:[UIColor clearColor]];
         [_sendButton setBackgroundImage:[UIImage imageNamed:@"emojiKB_sendBtn_gray"] forState:UIControlStateNormal];

@@ -127,7 +127,7 @@
     TLConversation *conversation = [self.data objectAtIndex:indexPath.row];
     __weak typeof(self) weakSelf = self;
     UITableViewRowAction *delAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault
-                                                                         title:@"删除"
+                                                                         title:NSLocalizedString(@"DELETE", nil)
                                                                        handler:^(UITableViewRowAction *action, NSIndexPath *indexPath)
                                        {
                                            [weakSelf.data removeObjectAtIndex:indexPath.row];
@@ -223,7 +223,8 @@
     
     self.subscription = [self.client  subscribeToQuery:self.query withHandler:self];
     __weak TLConversationViewController * weakSelf = self;
-    [self.navigationItem setTitle:@"聊天"];
+    //[self.navigationItem setTitle:NSLocalizedString(@"MESSAGE", nil)];
+    
 //    self.subscription = [self.subscription addSubscribeHandler:^(PFQuery<PFObject *> * _Nonnull query) {
 //        DLog(@"Subscribed");
 //        dispatch_async(dispatch_get_main_queue(), ^{
@@ -271,7 +272,7 @@
 - (void)liveQuery:(PFQuery<PFObject *> *)query didSubscribeInClient:(PFLiveQueryClient *)client {
     DLog(@"Subscribed");
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.navigationItem setTitle:@"聊天"];
+        //[self.navigationItem setTitle:NSLocalizedString(@"MESSAGE", nil)];
     });
 }
 
