@@ -10,6 +10,11 @@
 #import "TLVoiceImageView.h"
 #import <Masonry/Masonry.h>
 
+//#define     MSG_SPACE_TOP       10
+//#define     MSG_SPACE_BTM       10
+//#define     MSG_SPACE_LEFT      15
+//#define     MSG_SPACE_RIGHT     15
+
 @interface TLVoiceMessageCell ()
 
 @property (nonatomic, strong) UILabel *voiceTimeLabel;
@@ -42,12 +47,16 @@
     if (lastOwnType != message.ownerTyper) {
         if (message.ownerTyper == TLMessageOwnerTypeSelf) {
             [self.voiceImageView setIsFromMe:YES];
-            [self.messageBackgroundView setImage:[UIImage imageNamed:@"message_sender_bg"]];
-            [self.messageBackgroundView setHighlightedImage:[UIImage imageNamed:@"message_sender_bgHL"]];
+            [self.messageBackgroundView setBackgroundColor:[UIColor colorWithHexString:@"60DEDA"]];
+            if (@available(iOS 11.0, *)) {
+                [self.messageBackgroundView.layer setMaskedCorners:(kCALayerMaxXMaxYCorner|kCALayerMinXMinYCorner|kCALayerMinXMaxYCorner)];
+            } else {
+                // Fallback on earlier versions
+            }
             
             [self.voiceTimeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-                make.right.mas_equalTo(self.messageBackgroundView.mas_left);
-                make.top.mas_equalTo(self.messageBackgroundView.mas_centerY).mas_offset(-5);
+                make.right.mas_equalTo(self.messageBackgroundView.mas_left).mas_offset(-3);
+                make.top.mas_equalTo(self.messageBackgroundView.mas_centerY).mas_offset(-8);
             }];
             [self.voiceImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.right.mas_equalTo(-13);
@@ -56,11 +65,16 @@
         }
         else if (message.ownerTyper == TLMessageOwnerTypeFriend){
             [self.voiceImageView setIsFromMe:NO];
-            [self.messageBackgroundView setImage:[UIImage imageNamed:@"message_receiver_bg"]];
-            [self.messageBackgroundView setHighlightedImage:[UIImage imageNamed:@"message_receiver_bgHL"]];
+            [self.messageBackgroundView setBackgroundColor:[UIColor colorWithHexString:@"F5F5F0"]];
+            if (@available(iOS 11.0, *)) {
+                [self.messageBackgroundView.layer setMaskedCorners:(kCALayerMaxXMaxYCorner|kCALayerMaxXMinYCorner|kCALayerMinXMaxYCorner)];
+            } else {
+                // Fallback on earlier versions
+            }
+            
             [self.voiceTimeLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-                make.left.mas_equalTo(self.messageBackgroundView.mas_right);
-                make.top.mas_equalTo(self.messageBackgroundView.mas_centerY).mas_offset(-5);
+                make.left.mas_equalTo(self.messageBackgroundView.mas_right).mas_offset(3);
+                make.top.mas_equalTo(self.messageBackgroundView.mas_centerY).mas_offset(-8);
             }];
             [self.voiceImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.left.mas_equalTo(13);
@@ -69,7 +83,7 @@
         }
     }
     [self.messageBackgroundView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.size.mas_equalTo(message.messageFrame.contentSize);
+        make.size.mas_equalTo(CGSizeMake(message.messageFrame.contentSize.width - 10.0f, message.messageFrame.contentSize.height - 20.0f));
     }];
     
     if (message.msgStatus == TLVoiceMessageStatusRecording) {
@@ -105,7 +119,7 @@
 
     [UIView animateWithDuration:0.5 animations:^{
         [self.messageBackgroundView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.size.mas_equalTo(message.messageFrame.contentSize);
+        make.size.mas_equalTo(CGSizeMake(message.messageFrame.contentSize.width - 10.0f, message.messageFrame.contentSize.height - 20.0f));
         }];
         [self layoutIfNeeded];
     }];

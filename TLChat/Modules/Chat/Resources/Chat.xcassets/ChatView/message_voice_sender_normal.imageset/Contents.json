@@ -6,13 +6,12 @@
     },
     {
       "idiom" : "universal",
-      "scale" : "2x",
-      "filename" : "message_voice_sender_normal.imageset.png"
+      "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "scale" : "3x",
-      "filename" : "message_voice_sender_normal@3x.png"
+      "filename" : "sound green.png",
+      "scale" : "3x"
     }
   ],
   "info" : {

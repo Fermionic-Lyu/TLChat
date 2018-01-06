@@ -28,7 +28,7 @@
     if (self = [super initWithFrame:frame]) {
         [self setNormalTitle:NSLocalizedString(@"HOLD_TO_SPEAK", nil)];
         [self setHighlightTitle:NSLocalizedString(@"RELEASE_TO_SEND", nil)];
-        [self setCancelTitle:@"松开 取消"];
+        [self setCancelTitle:NSLocalizedString(@"RELEASE_CANCEL_VOICE", nil)];
         [self setHighlightColor:[UIColor colorWithWhite:0.0 alpha:0.1]];
         [self.layer setMasksToBounds:YES];
         [self.layer setCornerRadius:4.0f];

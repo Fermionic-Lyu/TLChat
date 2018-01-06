@@ -12,17 +12,17 @@
 #import "TLMacros.h"
 
 #define     TIMELABEL_HEIGHT    20.0f
-#define     TIMELABEL_SPACE_Y   10.0f
+#define     TIMELABEL_SPACE_Y   15.0f
 
 #define     NAMELABEL_HEIGHT    14.0f
 #define     NAMELABEL_SPACE_X   12.0f
 #define     NAMELABEL_SPACE_Y   1.0f
 
-#define     AVATAR_WIDTH        40.0f
-#define     AVATAR_SPACE_X      8.0f
+#define     AVATAR_WIDTH        30.0f
+#define     AVATAR_SPACE_X      20.0f
 #define     AVATAR_SPACE_Y      12.0f
 
-#define     MSGBG_SPACE_X       5.0f
+#define     MSGBG_SPACE_X       10.0f
 #define     MSGBG_SPACE_Y       1.0f
 
 @interface TLMessageBaseCell ()
@@ -176,8 +176,8 @@
     if (_timeLabel == nil) {
         _timeLabel = [[UILabel alloc] init];
         [_timeLabel setFont:[UIFont systemFontOfSize:12.0f]];
-        [_timeLabel setTextColor:[UIColor whiteColor]];
-        [_timeLabel setBackgroundColor:[UIColor grayColor]];
+        [_timeLabel setTextColor:[UIColor colorWithHexString:@"9B9B9B"]];
+        [_timeLabel setBackgroundColor:[UIColor clearColor]];
         [_timeLabel setAlpha:0.7f];
         [_timeLabel.layer setMasksToBounds:YES];
         [_timeLabel.layer setCornerRadius:5.0f];
@@ -191,7 +191,7 @@
         _avatarButton = [[UIButton alloc] init];
         //[_avatarButton.layer setMasksToBounds:YES];
         [_avatarButton setClipsToBounds:YES];
-        [_avatarButton.layer setCornerRadius:20.0f];
+        [_avatarButton.layer setCornerRadius:AVATAR_WIDTH/2.0f];
         //[_avatarButton.layer setBorderWidth:BORDER_WIDTH_1PX];
         //[_avatarButton.layer setBorderColor:[UIColor colorWithWhite:0.7 alpha:1.0].CGColor];
         [_avatarButton addTarget:self action:@selector(avatarButtonDown:) forControlEvents:UIControlEventTouchUpInside];
@@ -213,6 +213,8 @@
 {
     if (_messageBackgroundView == nil) {
         _messageBackgroundView = [[UIImageView alloc] init];
+        [_messageBackgroundView setClipsToBounds:YES];
+        [_messageBackgroundView.layer setCornerRadius:10.0f];
         [_messageBackgroundView setUserInteractionEnabled:YES];
         
         UILongPressGestureRecognizer *longPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressMsgBGView:)];

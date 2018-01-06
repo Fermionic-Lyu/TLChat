@@ -10,10 +10,10 @@
 #import <Masonry/Masonry.h>
 #import "UIFont+TLChat.h"
 
-#define     MSG_SPACE_TOP       14
-#define     MSG_SPACE_BTM       20
-#define     MSG_SPACE_LEFT      19
-#define     MSG_SPACE_RIGHT     22
+#define     MSG_SPACE_TOP       10
+#define     MSG_SPACE_BTM       10
+#define     MSG_SPACE_LEFT      15
+#define     MSG_SPACE_RIGHT     15
 
 @interface TLTextMessageCell ()
 
@@ -36,17 +36,23 @@
     if (self.message && [self.message.messageID isEqualToString:message.messageID]) {
         return;
     }
-    TLMessageOwnerType lastOwnType = self.message ? self.message.ownerTyper : -1;
+
     [super setMessage:message];
     [self.messageLabel setAttributedText:[message attrText]];
     
     [self.messageLabel setContentCompressionResistancePriority:500 forAxis:UILayoutConstraintAxisHorizontal];
     [self.messageBackgroundView setContentCompressionResistancePriority:100 forAxis:UILayoutConstraintAxisHorizontal];
-    if (lastOwnType != message.ownerTyper) {
-        if (message.ownerTyper == TLMessageOwnerTypeSelf) {
-            [self.messageBackgroundView setImage:[UIImage imageNamed:@"message_sender_bg"]];
-            [self.messageBackgroundView setHighlightedImage:[UIImage imageNamed:@"message_sender_bgHL"]];
-            
+    
+    
+    switch (message.ownerTyper) {
+        case TLMessageOwnerTypeSelf: {
+            [self.messageBackgroundView setBackgroundColor:[UIColor colorWithHexString:@"60DEDA"]];
+            if (@available(iOS 11.0, *)) {
+                [self.messageBackgroundView.layer setMaskedCorners:(kCALayerMaxXMaxYCorner|kCALayerMinXMinYCorner|kCALayerMinXMaxYCorner)];
+            } else {
+                // Fallback on earlier versions
+            }
+
             [self.messageLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.right.mas_equalTo(self.messageBackgroundView).mas_offset(-MSG_SPACE_RIGHT);
                 make.top.mas_equalTo(self.messageBackgroundView).mas_offset(MSG_SPACE_TOP);
@@ -55,11 +61,15 @@
                 make.left.mas_equalTo(self.messageLabel).mas_offset(-MSG_SPACE_LEFT);
                 make.bottom.mas_equalTo(self.messageLabel).mas_offset(MSG_SPACE_BTM);
             }];
+            break;
         }
-        else if (message.ownerTyper == TLMessageOwnerTypeFriend){
-            [self.messageBackgroundView setImage:[UIImage imageNamed:@"message_receiver_bg"]];
-            [self.messageBackgroundView setHighlightedImage:[UIImage imageNamed:@"message_receiver_bgHL"]];
-            
+        case TLMessageOwnerTypeFriend: {
+            [self.messageBackgroundView setBackgroundColor:[UIColor colorWithHexString:@"F5F5F0"]];
+            if (@available(iOS 11.0, *)) {
+                [self.messageBackgroundView.layer setMaskedCorners:(kCALayerMaxXMaxYCorner|kCALayerMaxXMinYCorner|kCALayerMinXMaxYCorner)];
+            } else {
+                // Fallback on earlier versions
+            }
             [self.messageLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.left.mas_equalTo(self.messageBackgroundView).mas_offset(MSG_SPACE_LEFT);
                 make.top.mas_equalTo(self.messageBackgroundView).mas_offset(MSG_SPACE_TOP);
@@ -68,7 +78,10 @@
                 make.right.mas_equalTo(self.messageLabel).mas_offset(MSG_SPACE_RIGHT);
                 make.bottom.mas_equalTo(self.messageLabel).mas_offset(MSG_SPACE_BTM);
             }];
+            break;
         }
+        default:
+            break;
     }
     
     [self.messageLabel mas_updateConstraints:^(MASConstraintMaker *make) {
