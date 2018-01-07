@@ -191,16 +191,16 @@
 - (UIImageView *)avatarImageView
 {
     if (!_avatarImageView) {
-        _avatarImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15.0f, 20.0f, 40.0f, 40.0f)];
+        _avatarImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10.0f, 15.0f, 50.0f, 50.0f)];
         [_avatarImageView.layer setMasksToBounds:YES];
-        [_avatarImageView.layer setCornerRadius:20.0f];
+        [_avatarImageView.layer setCornerRadius:25.0f];
     }
     return _avatarImageView;
 }
 
 - (UILabel *)firstCharacterLabel {
     if (!_firstCharacterLabel) {
-        _firstCharacterLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 40.0f, 40.0f)];
+        _firstCharacterLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 50.0f, 50.0f)];
         [_firstCharacterLabel setTextAlignment:NSTextAlignmentCenter];
         [_firstCharacterLabel setTextColor:[UIColor whiteColor]];
         [_firstCharacterLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:30.0f]];
@@ -211,7 +211,7 @@
 - (UILabel *)usernameLabel
 {
     if (!_usernameLabel) {
-        _usernameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70.0f, 20.0f, [UIScreen mainScreen].bounds.size.width - 140.0f, 20.0f)];
+        _usernameLabel = [[UILabel alloc] initWithFrame:CGRectMake(75.0f, 20.0f, [UIScreen mainScreen].bounds.size.width - 160.0f, 20.0f)];
         [_usernameLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:16.0f]];
         [_usernameLabel setTextColor:[UIColor colorWithHexString:@"4A4A4A"]];
     }
@@ -221,7 +221,7 @@
 - (UILabel *)detailLabel
 {
     if (_detailLabel == nil) {
-        _detailLabel = [[UILabel alloc] initWithFrame:CGRectMake(70.0f, 40.0f, [UIScreen mainScreen].bounds.size.width - 85.0f, 20.0f)];
+        _detailLabel = [[UILabel alloc] initWithFrame:CGRectMake(75.0f, 40.0f, [UIScreen mainScreen].bounds.size.width - 85.0f, 20.0f)];
         [_detailLabel setFont:[UIFont systemFontOfSize:13.0f]];
         [_detailLabel setTextColor:[UIColor colorWithHexString:@"9B9B9B"]];
     }

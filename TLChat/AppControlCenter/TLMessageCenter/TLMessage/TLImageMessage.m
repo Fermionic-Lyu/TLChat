@@ -117,7 +117,7 @@
 
 - (NSString *)conversationContent
 {
-    return @"[图片]";
+    return [NSString stringWithFormat:@"[%@]",NSLocalizedString(@"PHOTO_MESSAGE", nil)];
 }
 
 - (NSString *)messageCopy

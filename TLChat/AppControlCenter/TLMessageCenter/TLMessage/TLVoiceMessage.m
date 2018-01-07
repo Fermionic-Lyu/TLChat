@@ -82,7 +82,7 @@
 
 - (NSString *)conversationContent
 {
-    return @"[语音消息]";
+    return [NSString stringWithFormat:@"[%@]",NSLocalizedString(@"VOICE_MESSAGE",nil)];
 }
 
 - (NSString *)messageCopy

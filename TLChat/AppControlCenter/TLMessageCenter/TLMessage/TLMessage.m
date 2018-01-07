@@ -75,11 +75,11 @@
     }
     
     if (dict[@"time"]) {
-        return @"[Audio]";
+        return [NSString stringWithFormat:@"[%@]",NSLocalizedString(@"VOICE_MESSAGE",nil)];
     }
     
     if (dict[@"path"]) {
-        return @"[Photo]";
+        return [NSString stringWithFormat:@"[%@]",NSLocalizedString(@"PHOTO_MESSAGE", nil)];
     }
     
     return @"";
