@@ -72,7 +72,7 @@
 {
     if (kMessageFrame == nil) {
         kMessageFrame = [[TLMessageFrame alloc] init];
-        CGFloat width = 60 + (self.time > 20 ? 1.0 : self.time / 20.0)  * (MAX_MESSAGE_WIDTH - 60);
+        CGFloat width = 65;
         CGFloat height = 54;
         kMessageFrame.contentSize = CGSizeMake(width, height);
         kMessageFrame.height = kMessageFrame.contentSize.height + (self.showTime ? 30 : 0) + (self.showName ? 15 : 0) + 3;

@@ -83,7 +83,7 @@
         }
     }
     [self.messageBackgroundView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.size.mas_equalTo(CGSizeMake(message.messageFrame.contentSize.width - 10.0f, message.messageFrame.contentSize.height - 20.0f));
+        make.size.mas_equalTo(CGSizeMake(message.messageFrame.contentSize.width, message.messageFrame.contentSize.height - 20.0f));
     }];
     
     if (message.msgStatus == TLVoiceMessageStatusRecording) {
@@ -119,7 +119,7 @@
 
     [UIView animateWithDuration:0.5 animations:^{
         [self.messageBackgroundView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.size.mas_equalTo(CGSizeMake(message.messageFrame.contentSize.width - 10.0f, message.messageFrame.contentSize.height - 20.0f));
+        make.size.mas_equalTo(CGSizeMake(message.messageFrame.contentSize.width, message.messageFrame.contentSize.height - 20.0f));
         }];
         [self layoutIfNeeded];
     }];
