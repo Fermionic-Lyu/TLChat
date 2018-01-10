@@ -14,7 +14,7 @@
 
 #define     CONV_SPACE_X            15.0f
 #define     CONV_SPACE_Y            9.5f
-#define     REDPOINT_WIDTH          10.0f
+#define     REDPOINT_WIDTH          18.0f
 
 @interface TLConversationCell()
 
@@ -31,6 +31,8 @@
 @property (nonatomic, strong) UIImageView *remindImageView;
 
 @property (nonatomic, strong) UIView *redPointView;
+
+@property (nonatomic, strong) UILabel *unreadLabel;
 
 @end
 
@@ -95,7 +97,7 @@
         default:
             break;
     }
-    
+    [self.unreadLabel setText:[NSString stringWithFormat:@"%ld",(long)conversation.unreadCount]];
     self.conversation.isRead ? [self markAsRead] : [self markAsUnread];
 }
 
@@ -180,11 +182,11 @@
         make.centerY.mas_equalTo(self.detailLabel);
     }];
     
-    [self.redPointView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.mas_equalTo(self.avatarImageView.mas_right).mas_offset(-2);
-        make.centerY.mas_equalTo(self.avatarImageView.mas_top).mas_offset(2);
-        make.width.and.height.mas_equalTo(REDPOINT_WIDTH);
-    }];
+//    [self.redPointView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.left.mas_equalTo(self.usernameLabel.mas_right).mas_offset(3);
+//        make.top.mas_equalTo(self.avatarImageView.top).mas_offset(-4);
+//        make.width.and.height.mas_equalTo(REDPOINT_WIDTH);
+//    }];
 }
 
 #pragma mark - Getter
@@ -250,14 +252,25 @@
 - (UIView *)redPointView
 {
     if (_redPointView == nil) {
-        _redPointView = [[UIView alloc] init];
-        [_redPointView setBackgroundColor:[UIColor redColor]];
+        _redPointView = [[UIView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 38.0f, 41.0f, REDPOINT_WIDTH, REDPOINT_WIDTH)];
+        [_redPointView setBackgroundColor:kEmerald];
         
         [_redPointView.layer setMasksToBounds:YES];
         [_redPointView.layer setCornerRadius:REDPOINT_WIDTH / 2.0];
         [_redPointView setHidden:YES];
+        [_redPointView addSubview:self.unreadLabel];
     }
     return _redPointView;
+}
+
+- (UILabel *)unreadLabel {
+    if (!_unreadLabel) {
+        _unreadLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 18.0f, 18.0f)];
+        [_unreadLabel setFont:[UIFont systemFontOfSize:12.0f]];
+        [_unreadLabel setTextColor:[UIColor whiteColor]];
+        [_unreadLabel setTextAlignment:NSTextAlignmentCenter];
+    }
+    return _unreadLabel;
 }
 
 @end

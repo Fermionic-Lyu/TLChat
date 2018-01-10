@@ -41,7 +41,7 @@
     NSMutableArray *displayData = [[NSMutableArray alloc] init];
     for (NSInteger emojiGroupIndex = 0; emojiGroupIndex < data.count; emojiGroupIndex++) {
         TLEmojiGroup *group = data[emojiGroupIndex];
-        if (group.count > 0) {      // 已下载的表情包
+        if (group.type != TLEmojiTypeFace && group.count > 0) {      // 已下载的表情包
             NSInteger cellWidth, cellHeight;
             CGFloat spaceX, spaceYTop, spaceYBottom;
             cellWidth = ((self.width - 20) / group.colNumber);
