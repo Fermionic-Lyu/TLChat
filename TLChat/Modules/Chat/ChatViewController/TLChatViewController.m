@@ -16,6 +16,8 @@
 #import "TLChatNotificationKey.h"
 #import "TLMacros.h"
 
+#import "HSCourseInfo.h"
+
 static TLChatViewController *chatVC;
 
 @interface TLChatViewController()
@@ -51,6 +53,9 @@ static TLChatViewController *chatVC;
     } else {
         // Fallback on earlier versions
     }
+//    if ([self.partner chat_userType] == TLChatUserTypeGroup) {
+//        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"group_info"] style:UIBarButtonItemStylePlain target:self action:@selector(rightBarButtonDown:)];
+//    }
     //[self.view setBackgroundColor:[UIColor whiteColor]];
 }
 

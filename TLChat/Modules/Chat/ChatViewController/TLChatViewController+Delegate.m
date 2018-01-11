@@ -74,24 +74,12 @@
 //MARK: TLChatViewControllerProxy
 - (void)didClickedUserAvatar:(TLUser *)user
 {
-//    TLFriendDetailViewController *detailVC = [[TLFriendDetailViewController alloc] init];
-//    [detailVC setUser:user];
-//    [self setHidesBottomBarWhenPushed:YES];
-//    [self.navigationController pushViewController:detailVC animated:YES];
-    
-//    self.userId = [NSString stringWithFormat:@"%ld", [[dict valueForKey:@"userId"] integerValue]];
-//    self.name = [dict stringForKey:@"name"];
-//    self.headerIcon = [dict stringForKey:@"headerIcon"];
-//    self.friendState =[dict integerForKey:@"isFriend"];
-    
-//    HSStudentUserInfo * userInfo = [[HSStudentUserInfo alloc] initWithDict:
-//                                    @{@"userId":user.userID,
-//                                      @"name":user.username,
-//                                      @"headerIcon":user.avatarURL ?: @"",
-//                                      @"isFriend":@(YES)
-//                                      }]; // TODO: handle non-friend chat.
     [[HSNetworkAdapter adapter] getUserDetailInfoWithUserId:user.userID finishBlock:^(HSStudentUserInfo *studUserInfo) {
-        [HSUIManager openUserDetails:studUserInfo navigationController:self.navigationController];
+        if ([self.partner chat_userType] == TLChatUserTypeUser) {
+            [HSUIManager openUserDetailsFromPersonalChat:studUserInfo navigationController:self.navigationController];
+        } else {
+            [HSUIManager openUserDetails:studUserInfo navigationController:self.navigationController];
+        }
     } failed:^(NSError *error) {
         
     }];
