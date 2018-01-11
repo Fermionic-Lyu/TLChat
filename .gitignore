@@ -52,3 +52,5 @@ Carthage/Build
 fastlane/report.xml
 fastlane/screenshots
 PrefixHeader.pch
+TLChat/Modules/Chat/Resources/Chat.xcassets/.DS_Store
+TLChat/Modules/Chat/Resources/Chat.xcassets/ChatView/.DS_Store
