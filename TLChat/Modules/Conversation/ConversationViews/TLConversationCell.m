@@ -196,6 +196,7 @@
         _avatarImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10.0f, 15.0f, 50.0f, 50.0f)];
         [_avatarImageView.layer setMasksToBounds:YES];
         [_avatarImageView.layer setCornerRadius:25.0f];
+        [_avatarImageView setContentMode:UIViewContentModeScaleAspectFill];
     }
     return _avatarImageView;
 }
@@ -214,7 +215,7 @@
 {
     if (!_usernameLabel) {
         _usernameLabel = [[UILabel alloc] initWithFrame:CGRectMake(75.0f, 20.0f, [UIScreen mainScreen].bounds.size.width - 160.0f, 20.0f)];
-        [_usernameLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:16.0f]];
+        [_usernameLabel setFont:[UIFont fontWithName:@"Helvetica-Regular" size:16.0f]];
         [_usernameLabel setTextColor:[UIColor colorWithHexString:@"4A4A4A"]];
     }
     return _usernameLabel;
