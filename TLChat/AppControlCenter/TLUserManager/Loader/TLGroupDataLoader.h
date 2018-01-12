@@ -11,6 +11,9 @@
 #import <UIKit/UIKit.h>
 
 @interface TLGroupDataLoader : NSObject
+
+@property (strong, nonatomic) NSArray<PFObject *> *courses;
+
 + (TLGroupDataLoader *)sharedGroupDataLoader;
 
 + (void)p_loadGroupsDataWithCompletionBlock:(void(^)(NSArray<TLUser*> *groups))completionBlock;

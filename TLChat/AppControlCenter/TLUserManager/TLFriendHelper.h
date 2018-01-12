@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "TLUserGroup.h"
 #import "TLGroup.h"
+#import "HSCourseInfo.h"
+
 @class TLMessage;
 
 @interface TLFriendHelper : NSObject
@@ -50,12 +52,16 @@
 
 - (TLGroup *)getGroupInfoByGroupID:(NSString *)groupID;
 
+- (HSCourseInfo *)getCourseInfoByGroupID:(NSString *)groupID;
+
 - (NSString *)makeDialogNameForFriend:(NSString *)fid myId:(NSString *)uid;
 
 - (NSString *)formatLastMessage:(NSString *)content fid:(NSString *)fid;
 - (NSString *)formatLastMessage:(TLMessage *)message;
 
 - (void)reset; // when user log out.
+
+- (void)reloadGroupData;
 
 - (void)deleteFriend:(NSString *)fid;
 @end

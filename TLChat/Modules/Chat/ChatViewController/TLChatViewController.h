@@ -7,8 +7,10 @@
 //
 
 #import "TLChatBaseViewController.h"
+#import "HSCourseInfo.h"
 
 @interface TLChatViewController : TLChatBaseViewController
 
+@property (strong, nonatomic) HSCourseInfo *courseInfo;
 
 @end

@@ -113,6 +113,7 @@
             return;
         }
         [chatVC setPartner:group];
+        chatVC.courseInfo = [[TLFriendHelper sharedFriendHelper] getCourseInfoByGroupID:conversation.partnerID];
     }
     [self setHidesBottomBarWhenPushed:YES];
     [self.navigationController pushViewController:chatVC animated:YES];
