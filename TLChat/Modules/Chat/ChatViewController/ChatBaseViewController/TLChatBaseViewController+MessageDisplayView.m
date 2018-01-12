@@ -72,7 +72,7 @@
                     }
                     else if ([weakself.partner chat_userType] == TLChatUserTypeGroup){
                         // TO support open public group, every can 'join' in, no group member info
-                        TLUser * friend = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:message.userID];
+                        TLUser * friend = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:message.friendID];
                         message.fromUser = friend;
 //                        if ([weakself.partner respondsToSelector:@selector(groupMemberByID:)]) {
 //                            message.fromUser = [weakself.partner groupMemberByID:message.friendID];
