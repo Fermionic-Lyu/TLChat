@@ -136,8 +136,22 @@
                    [[UIApplication sharedApplication].delegate.window.rootViewController presentViewController:ac animated:YES completion:nil];
                    
                    [[NSNotificationCenter defaultCenter] postNotificationName:@"MessageSendingFail" object:nil userInfo:@{@"message": message}];
+                   
                });
-               
+               NSArray *arrPara = [NSArray arrayWithObjects:
+                                   message.messageID,
+                                   message.userID,
+                                   fid,
+                                   TLNoNilString(subfid),
+                                   TLTimeStamp(message.date),
+                                   [NSNumber numberWithInteger:message.partnerType],
+                                   [NSNumber numberWithInteger:message.ownerTyper],
+                                   [NSNumber numberWithInteger:message.messageType],
+                                   [message.content mj_JSONString],
+                                   [NSNumber numberWithInteger:TLMessageSendFail],
+                                   [NSNumber numberWithInteger:message.readState],
+                                   @"", @"", @"", @"", @"", nil];
+               [self excuteSQL:sqlString withArrParameter:arrPara];
                
            }
        }];

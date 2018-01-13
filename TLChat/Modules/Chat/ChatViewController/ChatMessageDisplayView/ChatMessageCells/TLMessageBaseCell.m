@@ -40,6 +40,7 @@
         [self.contentView addSubview:self.avatarButton];
         [self.contentView addSubview:self.usernameLabel];
         [self.contentView addSubview:self.messageBackgroundView];
+        [self.contentView addSubview:self.failureView];
         [self p_addMasonry];
     }
     return self;
@@ -101,8 +102,15 @@
             message.ownerTyper == TLMessageOwnerTypeSelf ? make.right.mas_equalTo(self.avatarButton.mas_left).mas_offset(-MSGBG_SPACE_X) : make.left.mas_equalTo(self.avatarButton.mas_right).mas_offset(MSGBG_SPACE_X);
             make.top.mas_equalTo(self.usernameLabel.mas_bottom).mas_offset(message.showName ? 0 : -MSGBG_SPACE_Y);
         }];
+        
+        [self.failureView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            message.ownerTyper == TLMessageOwnerTypeSelf ? make.right.mas_equalTo(self.messageBackgroundView.mas_left).mas_offset(-5.0f) : make.left.mas_equalTo(self.messageBackgroundView.mas_right).mas_offset(5.0f);
+            make.centerY.mas_equalTo(self.messageBackgroundView.mas_centerY);
+            make.size.width.and.height.mas_equalTo(25.0f);
+        }];
     }
     
+    [self.failureView setHidden:message.sendState != TLMessageSendFail];
     [self.usernameLabel setHidden:!message.showName];
     [self.usernameLabel mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(message.showName ? NAMELABEL_HEIGHT : 0);
@@ -114,6 +122,10 @@
 - (void)updateMessage:(TLMessage *)message
 {
     [self setMessage:message];
+}
+
+- (void)updateSendStatus {
+    [self.failureView setHidden:_message.sendState != TLMessageSendFail];
 }
 
 #pragma mark - Private Methods -
@@ -140,6 +152,11 @@
         make.right.mas_equalTo(self.avatarButton.mas_left).mas_offset(-MSGBG_SPACE_X);
         make.top.mas_equalTo(self.usernameLabel.mas_bottom).mas_offset(-MSGBG_SPACE_Y);
     }];
+    
+//    [self.failureView mas_remakeConstraints:^(MASConstraintMaker *make) {
+//        make.centerY.mas_equalTo(self.messageBackgroundView.mas_centerY);
+//        make.right.mas_equalTo(self.messageBackgroundView.mas_left).mas_offset(-5.0f);
+//    }];
 }
 
 #pragma mark - Event Response -
@@ -225,6 +242,14 @@
         [_messageBackgroundView addGestureRecognizer:doubleTapGR];
     }
     return _messageBackgroundView;
+}
+
+- (UIImageView *)failureView {
+    if (!_failureView) {
+        _failureView = [[UIImageView alloc] init];
+        [_failureView setImage:[UIImage imageNamed:@"failure"]];
+    }
+    return _failureView;
 }
 
 @end

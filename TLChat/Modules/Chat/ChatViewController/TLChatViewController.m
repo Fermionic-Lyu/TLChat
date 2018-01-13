@@ -115,7 +115,7 @@ static TLChatViewController *chatVC;
 //        [self setHidesBottomBarWhenPushed:YES];
 //        [self.navigationController pushViewController:chatGroupDetailVC animated:YES];
         HSCourseStudentListVC *nextVC = [[HSCourseStudentListVC alloc] initWithCourse:_courseInfo];
-        nextVC.detailVM = [[HSCourseDetailVM alloc] initWithCourseInfo:_courseInfo];
+//        nextVC.detailVM = [[HSCourseDetailVM alloc] initWithCourseInfo:_courseInfo];
         [self.navigationController pushViewController:nextVC animated:YES hideBottomTabBar:YES];
         
     }

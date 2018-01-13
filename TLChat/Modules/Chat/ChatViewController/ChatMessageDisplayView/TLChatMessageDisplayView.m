@@ -134,7 +134,9 @@
 - (void)onMessageSendingFail:(NSNotification *)notif
 {
     if (notif.userInfo && notif.userInfo[@"message"] && [notif.userInfo[@"message"] isKindOfClass:[TLMessage class]]) {
-        [self deleteMessage:notif.userInfo[@"message"]];
+//        [self deleteMessage:notif.userInfo[@"message"]];
+        [notif.userInfo[@"message"] setSendState:TLMessageSendFail];
+        [self updateMessage:notif.userInfo[@"message"]];
     }
 }
 
@@ -145,6 +147,7 @@
         if ([cell isKindOfClass:[TLMessageBaseCell class]]) {
             if ([[(TLMessageBaseCell *)cell message].messageID isEqualToString:message.messageID]) {
                 [cell updateMessage:message];
+                [cell updateSendStatus];
                 return;
             }
         }

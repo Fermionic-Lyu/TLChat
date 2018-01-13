@@ -107,13 +107,16 @@
     rect.origin.y += cellRect.origin.y - self.tableView.contentOffset.y;
     __weak typeof(self)weakSelf = self;
     [self.menuView showInView:self withMessageType:message.messageType rect:rect actionBlock:^(TLChatMenuItemType type) {
+        if (type == TLChatMenuItemTypeCancel) {
+            return;
+        }
         [weakSelf.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
         if (type == TLChatMenuItemTypeCopy) {
             NSString *str = [message messageCopy];
             [[UIPasteboard generalPasteboard] setString:str];
         }
         else if (type == TLChatMenuItemTypeDelete) {
-            TLActionSheet *actionSheet = [[TLActionSheet alloc] initWithTitle:@"是否删除该条消息" delegate:weakSelf cancelButtonTitle:@"取消" destructiveButtonTitle:@"确定" otherButtonTitles: nil];
+            TLActionSheet *actionSheet = [[TLActionSheet alloc] initWithTitle:NSLocalizedString(@"CONFIRM_DELETE_MESSAGE",nil) delegate:weakSelf cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) destructiveButtonTitle:NSLocalizedString(@"YES", nil) otherButtonTitles: nil];
             actionSheet.tag = [weakSelf.data indexOfObject:message];
             [actionSheet show];
         }
