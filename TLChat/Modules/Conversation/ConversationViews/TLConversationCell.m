@@ -78,25 +78,26 @@
     [self.usernameLabel setText:conversation.partnerName];
     [self.detailLabel setText:conversation.content];
     [self.timeLabel setText:conversation.date.conversaionTimeInfo];
-    switch (conversation.remindType) {
-        case TLMessageRemindTypeNormal:
-            [self.remindImageView setHidden:YES];
-            break;
-        case TLMessageRemindTypeClosed:
-            [self.remindImageView setHidden:NO];
-            [self.remindImageView setImage:[UIImage imageNamed:@"conv_remind_close"]];
-            break;
-        case TLMessageRemindTypeNotLook:
-            [self.remindImageView setHidden:NO];
-            [self.remindImageView setImage:[UIImage imageNamed:@"conv_remind_notlock"]];
-            break;
-        case TLMessageRemindTypeUnlike:
-            [self.remindImageView setHidden:NO];
-            [self.remindImageView setImage:[UIImage imageNamed:@"conv_remind_unlike"]];
-            break;
-        default:
-            break;
-    }
+    [self.remindImageView setHidden:YES];
+//    switch (conversation.remindType) {
+//        case TLMessageRemindTypeNormal:
+//            [self.remindImageView setHidden:YES];
+//            break;
+//        case TLMessageRemindTypeClosed:
+//            [self.remindImageView setHidden:NO];
+//            [self.remindImageView setImage:[UIImage imageNamed:@"conv_remind_close"]];
+//            break;
+//        case TLMessageRemindTypeNotLook:
+//            [self.remindImageView setHidden:NO];
+//            [self.remindImageView setImage:[UIImage imageNamed:@"conv_remind_notlock"]];
+//            break;
+//        case TLMessageRemindTypeUnlike:
+//            [self.remindImageView setHidden:NO];
+//            [self.remindImageView setImage:[UIImage imageNamed:@"conv_remind_unlike"]];
+//            break;
+//        default:
+//            break;
+//    }
     [self.unreadLabel setText:[NSString stringWithFormat:@"%ld",(long)conversation.unreadCount]];
     self.conversation.isRead ? [self markAsRead] : [self markAsUnread];
 }
@@ -224,7 +225,7 @@
 - (UILabel *)detailLabel
 {
     if (_detailLabel == nil) {
-        _detailLabel = [[UILabel alloc] initWithFrame:CGRectMake(75.0f, 40.0f, [UIScreen mainScreen].bounds.size.width - 85.0f, 20.0f)];
+        _detailLabel = [[UILabel alloc] initWithFrame:CGRectMake(75.0f, 40.0f, [UIScreen mainScreen].bounds.size.width - 115.0f, 20.0f)];
         [_detailLabel setFont:[UIFont systemFontOfSize:13.0f]];
         [_detailLabel setTextColor:[UIColor colorWithHexString:@"9B9B9B"]];
     }

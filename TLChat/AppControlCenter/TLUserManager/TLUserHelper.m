@@ -73,12 +73,11 @@
                 _user.userID = self.userID;
                 _user.username = [PFUser currentUser].username;
                 _user.nikeName = [PFUser currentUser].username;
-                PFFile * file = [PFUser currentUser][@"headerImage1"];
+                PFFile *file = [PFUser currentUser][@"headerImage1"];
                 if (file) {
-                    _user.avatarURL = file.url;
+                    [self updateAvatar:file.url];
                 }
 
-                // TODO: subscribe for user avatar change notification.
             }
             
             [self setUser:_user];
@@ -87,6 +86,12 @@
     
     }
     return _user;
+}
+
+- (void)updateAvatar:(NSString *)url {
+    _user.avatarURL = url;
+    TLDBUserStore *userStore = [[TLDBUserStore alloc] init];
+    [userStore updateUser:_user];
 }
 
 - (NSString *)userID

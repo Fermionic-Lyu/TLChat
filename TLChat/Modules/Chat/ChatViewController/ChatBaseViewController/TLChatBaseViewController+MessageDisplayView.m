@@ -64,7 +64,7 @@
                     message.showTime = YES;
                 }
                 if (message.ownerTyper == TLMessageOwnerTypeSelf) {
-                    message.fromUser = [TLUserHelper sharedHelper].user;
+                    message.fromUser = (id<TLChatUserProtocol>)[TLUserHelper sharedHelper].user;
                 }
                 else {
                     if ([weakself.partner chat_userType] == TLChatUserTypeUser) {

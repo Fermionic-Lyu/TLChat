@@ -21,6 +21,8 @@
 
 - (void)loginTestAccount;
 
+- (void)updateAvatar:(NSString *)url;
+
 
 
 @end

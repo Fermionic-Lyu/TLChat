@@ -83,39 +83,49 @@
     
     self.query = [PFQuery queryWithClassName:kParseClassNameMessage];
     
-    
-    
-    [self.query whereKey:@"dialogKey" equalTo:self.conversationKey]; //livequery doesn't work with pointer
-    self.query.limit = 100;
-    [self.query orderByDescending:@"createdAt"]; // get recent 1k msgs.
-    if (messageIDToIgnore) {
-        [self.query whereKey:@"objectId" notEqualTo:messageIDToIgnore];
-    }
-    if (self.converstaion.lastReadDate) {
-        [self.query whereKey:@"createdAt" greaterThan:self.converstaion.lastReadDate];
-        
-        DLog(@"load message newer than %@", self.converstaion.lastReadDate);
-    }
-    [self.query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-        // do client side sorting
-        NSArray * sortedMessages = [objects sortedArrayUsingComparator:^NSComparisonResult(PFObject *  _Nonnull obj1, PFObject *  _Nonnull obj2) {
-            return ![obj1[@"createdAt"] isEarlierThanDate:obj2[@"createdAt"]];
+    PFQuery *dialogQuery = [PFQuery queryWithClassName:kParseClassNameDialog];
+    [dialogQuery whereKey:@"key" equalTo:self.conversationKey];
+    [dialogQuery whereKey:@"user" equalTo:[PFUser currentUser]];
+    [dialogQuery orderByDescending:@"updatedAt"];
+    [dialogQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+        NSDate * localDeleteDate = nil;
+        if (object && object[@"localDeletedAt"]) {
+            localDeleteDate = object[@"localDeletedAt"];
+        }
+        [self.query whereKey:@"dialogKey" equalTo:self.conversationKey]; //livequery doesn't work with pointer
+        self.query.limit = 100;
+        [self.query orderByDescending:@"createdAt"]; // get recent 1k msgs.
+        if (messageIDToIgnore) {
+            [self.query whereKey:@"objectId" notEqualTo:messageIDToIgnore];
+        }
+        if (self.converstaion.lastReadDate) {
+            [self.query whereKey:@"createdAt" greaterThan:self.converstaion.lastReadDate];
+            
+            DLog(@"load message newer than %@", self.converstaion.lastReadDate);
+        }
+        if (localDeleteDate) {
+            [self.query whereKey:@"createdAt" greaterThan:localDeleteDate];
+        }
+        [self.query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+            // do client side sorting
+            NSArray * sortedMessages = [objects sortedArrayUsingComparator:^NSComparisonResult(PFObject *  _Nonnull obj1, PFObject *  _Nonnull obj2) {
+                return ![obj1[@"createdAt"] isEarlierThanDate:obj2[@"createdAt"]];
+            }];
+            
+            for (PFObject * message in sortedMessages) {
+                
+                [self processMessageFromServer:message bypassMine:NO];
+            }
+            
+            [[TLMessageManager sharedInstance].conversationStore resetUnreadNumberForConversationByUid:[self.user chat_userID] key:self.conversationKey];
+            [[TLMessageManager sharedInstance].conversationStore updateLastReadDateForConversationByUid:[self.user chat_userID] key:self.conversationKey];
+            
+            if (completionBlcok) {
+                completionBlcok();
+            }
         }];
         
-        for (PFObject * message in sortedMessages) {
-            
-            [self processMessageFromServer:message bypassMine:NO];
-        }
-        
-        [[TLMessageManager sharedInstance].conversationStore resetUnreadNumberForConversationByUid:[self.user chat_userID] key:self.conversationKey];
-        [[TLMessageManager sharedInstance].conversationStore updateLastReadDateForConversationByUid:[self.user chat_userID] key:self.conversationKey];
-        
-        if (completionBlcok) {
-            completionBlcok();
-        }
     }];
-    
-    
 }
 - (void)setupLiveQuery:(NSDate *)date {
     

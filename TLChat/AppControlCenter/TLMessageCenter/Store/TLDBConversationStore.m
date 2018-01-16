@@ -98,7 +98,8 @@
             dialog[@"type"] = @(type);
             dialog[@"key"] = dialogKey;
             dialog[@"user"] = [PFUser currentUser];
-            
+            dialog[@"lastReadDate"] = [NSDate date];
+            dialog[@"noDisturb"] = @(NO);
 
             dialog[@"name"] = dialogName;
             

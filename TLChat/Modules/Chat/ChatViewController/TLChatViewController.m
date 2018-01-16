@@ -18,7 +18,6 @@
 
 #import "HSCourseInfo.h"
 #import "HSCourseStudentListVC.h"
-#import "HSCourseDetailVM.h"
 
 static TLChatViewController *chatVC;
 
@@ -27,6 +26,9 @@ static TLChatViewController *chatVC;
 @property (nonatomic, strong) TLMoreKBHelper *moreKBhelper;
 
 @property (nonatomic, strong) TLEmojiKBHelper *emojiKBHelper;
+
+@property (nonatomic, strong) UIView *notifiButtonView;
+@property (nonatomic, strong) UIButton *notifiButton;
 
 @end
 
@@ -54,7 +56,14 @@ static TLChatViewController *chatVC;
         // Fallback on earlier versions
     }
 
-    [self.view setBackgroundColor:[UIColor whiteColor]];
+    [self.navigationController.view setBackgroundColor:[UIColor whiteColor]];
+    
+    
+    _notifiButtonView = [[UIView alloc] initWithFrame:CGRectMake(0.0f,0.0f, 25.0f, 40.0f)];
+    _notifiButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    _notifiButton.frame = CGRectMake(0.0f, 5.0f, 25.0f, 25.0f);
+    [_notifiButton addTarget:self action:@selector(notifiButtonDown:) forControlEvents:UIControlEventTouchUpInside];
+    [_notifiButtonView addSubview:_notifiButton];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -81,23 +90,24 @@ static TLChatViewController *chatVC;
 - (void)setPartner:(id<TLChatUserProtocol>)partner
 {
     [super setPartner:partner];
+    
     if ([partner chat_userType] == TLChatUserTypeGroup) {
-        //UIBarButtonItem *groupInfoBtn = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"group_info"] style:UIBarButtonItemStylePlain target:self action:@selector(rightBarButtonDown:)];
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 60.0f, 40.0f)];
-        [view setBackgroundColor:[UIColor clearColor]];
+
+        UIView *groupInfoView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 30.0f, 40.0f)];
         UIButton *groupInfoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        groupInfoBtn.frame = CGRectMake(35.0f, 10.0f, 25.0f, 25.0f);
+        groupInfoBtn.frame = CGRectMake(5.0f, 5.0f, 25.0f, 25.0f);
         [groupInfoBtn setImage:[UIImage imageNamed:@"group_info"] forState:UIControlStateNormal];
-        [groupInfoBtn addTarget:self action:@selector(rightBarButtonDown:) forControlEvents:UIControlEventTouchUpInside];
-        [view addSubview:groupInfoBtn];
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:view];
+        [groupInfoBtn addTarget:self action:@selector(groupInfoButtonDown:) forControlEvents:UIControlEventTouchUpInside];
+        [groupInfoView addSubview:groupInfoBtn];
         
-        //self.navigationItem.rightBarButtonItems = @[spacer,groupInfoBtn];
+        self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithCustomView:groupInfoView],[[UIBarButtonItem alloc] initWithCustomView:_notifiButtonView]];
+
+    } else {
         
-        //[self.navigationItem.rightBarButtonItem.customView setBackgroundColor:kEmerald];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_notifiButtonView];
         
     }
-    
+    [self setNotifiButtonImage];
 }
 
 #pragma mark - # Event Response
@@ -110,15 +120,26 @@ static TLChatViewController *chatVC;
         [self.navigationController pushViewController:chatDetailVC animated:YES];
     }
     else if ([self.partner chat_userType] == TLChatUserTypeGroup) {
-//        TLChatGroupDetailViewController *chatGroupDetailVC = [[TLChatGroupDetailViewController alloc] init];
-//        [chatGroupDetailVC setGroup:(TLGroup *)self.partner];
-//        [self setHidesBottomBarWhenPushed:YES];
-//        [self.navigationController pushViewController:chatGroupDetailVC animated:YES];
-        HSCourseStudentListVC *nextVC = [[HSCourseStudentListVC alloc] initWithCourse:_courseInfo];
-//        nextVC.detailVM = [[HSCourseDetailVM alloc] initWithCourseInfo:_courseInfo];
-        [self.navigationController pushViewController:nextVC animated:YES hideBottomTabBar:YES];
-        
+        TLChatGroupDetailViewController *chatGroupDetailVC = [[TLChatGroupDetailViewController alloc] init];
+        [chatGroupDetailVC setGroup:(TLGroup *)self.partner];
+        [self setHidesBottomBarWhenPushed:YES];
+        [self.navigationController pushViewController:chatGroupDetailVC animated:YES];
     }
+}
+
+- (void)notifiButtonDown:(id)sender {
+    [[HSNetworkAdapter adapter] modifyNotificationSettingForDialog:self.conversationKey];
+    self.noDisturb = !self.noDisturb;
+    [self setNotifiButtonImage];
+}
+
+- (void)groupInfoButtonDown:(id)sender {
+    HSCourseStudentListVC *nextVC = [[HSCourseStudentListVC alloc] initWithCourse:_courseInfo];
+    [self.navigationController pushViewController:nextVC animated:YES hideBottomTabBar:YES];
+}
+
+- (void)setNotifiButtonImage {
+    [_notifiButton setImage:[UIImage imageNamed:self.noDisturb ? @"notifi_off" : @"notifi_on"] forState:UIControlStateNormal];
 }
 
 @end

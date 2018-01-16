@@ -144,7 +144,10 @@ static BOOL isLoadingData = NO;
     [dialogQuery whereKey:@"user" equalTo:[PFUser currentUser]];
     [dialogQuery orderByDescending:@"updatedAt"];
     [dialogQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-        
+        BOOL localOnly = YES;
+        if (error && error.code == 101) {
+            localOnly = NO;
+        }
         NSDate * localDeleteDate = nil;
         if (object && object[@"localDeletedAt"]) {
             localDeleteDate = object[@"localDeletedAt"];
@@ -170,17 +173,18 @@ static BOOL isLoadingData = NO;
                                                                                      type:TLConversationTypePersonal
                                                                                      date:object.createdAt
                                                                              last_message:[TLMessage conversationContentForMessage: object[@"message"]]
-                                                                                localOnly:YES];
+                                                                                localOnly:localOnly];
                 
             }else{
                 if (localDeleteDate) {
+                    
                 }else{
                     [[TLMessageManager sharedInstance].conversationStore addConversationByUid:[PFUser currentUser].objectId
                                                                                           fid:friend.userID
                                                                                          type:TLConversationTypePersonal
                                                                                          date:friend.date
                                                                                  last_message:@"Let's start chat"
-                                                                                    localOnly:YES];
+                                                                                    localOnly:localOnly];
                 };
             }
             

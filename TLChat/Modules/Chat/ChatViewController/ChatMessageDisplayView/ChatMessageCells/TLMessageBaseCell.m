@@ -55,7 +55,6 @@
     [self.usernameLabel setText:[message.fromUser chat_username]];
     if ([message.fromUser chat_avatarPath].length > 0) {
         NSString *path = [NSFileManager pathUserAvatar:[message.fromUser chat_avatarPath]];
- 
         [self.avatarButton setImage:[UIImage imageNamed:path] forState:UIControlStateNormal];
         
     }

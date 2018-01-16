@@ -48,6 +48,8 @@ typedef NS_ENUM(NSInteger, TLMessageRemindType) {
  */
 @property (nonatomic, assign) TLMessageRemindType remindType;
 
+@property (assign, nonatomic) BOOL noDisturb;
+
 /**
  *  用户ID
  */

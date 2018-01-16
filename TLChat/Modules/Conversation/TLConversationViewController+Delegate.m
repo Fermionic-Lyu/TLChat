@@ -46,6 +46,7 @@
                 TLGroup *group = [[TLFriendHelper sharedFriendHelper] getGroupInfoByGroupID:conversation.partnerID];
                 [conversation updateGroupInfo:group];
             }
+            conversation.noDisturb = [[HSNetworkAdapter adapter] getNotificationSettingForConversation:conversation.key];
             
             totalUnreadCount = totalUnreadCount + conversation.unreadCount;
         }
@@ -97,6 +98,7 @@
     
     
     chatVC.conversationKey = conversation.key;
+    chatVC.noDisturb = conversation.noDisturb;
     
     if (conversation.convType == TLConversationTypePersonal) {
         TLUser *user = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:conversation.partnerID];

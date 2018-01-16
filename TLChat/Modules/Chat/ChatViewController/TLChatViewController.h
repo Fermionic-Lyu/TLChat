@@ -13,4 +13,6 @@
 
 @property (strong, nonatomic) HSCourseInfo *courseInfo;
 
+@property (assign, nonatomic) BOOL noDisturb;
+
 @end

@@ -61,7 +61,18 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newChatMessageArrive:) name:@"NewChatMessageReceived" object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newConversation:) name:@"UNI_FRIEND_LIST_CHANGED_NOTIFICATION" object:nil];
+    
     //self.definesPresentationContext = YES;
+}
+
+- (void)newConversation:(NSNotification *)notification {
+    if (notification.object) {
+        NSString *userId = notification.object;
+        TLUser *friend = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:userId];
+        friend.date = [NSDate date];
+        [[TLFriendDataLoader sharedFriendDataLoader] createFriendDialogWithLatestMessage:friend completionBlock:nil];
+    }
 }
 
 - (void)newChatMessageArrive:(NSNotification*)notificaion {
@@ -157,6 +168,7 @@
     [self.view addSubview:self.tableView];
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationController.view setBackgroundColor:[UIColor whiteColor]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor whiteColor]];
     
     if (@available(iOS 11.0, *)) {
         self.navigationController.navigationBar.prefersLargeTitles = YES;
