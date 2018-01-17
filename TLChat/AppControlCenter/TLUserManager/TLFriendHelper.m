@@ -43,13 +43,26 @@ static TLFriendHelper *friendHelper = nil;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
         friendHelper = [[TLFriendHelper alloc] init];
-        
-        PFQuery * query = [PFUser query];
-        [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-            friendHelper.users = objects;
-        }];
+        [friendHelper reloadUsers];
+
     });
     return friendHelper;
+}
+
+- (void)reloadUsers {
+    PFQuery * query = [PFUser query];
+    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+        self.users = objects;
+    }];
+}
+
+- (PFUser *)getPFUserByUserId:(NSString *)userId {
+    for (PFUser *user in self.users) {
+        if ([user.objectId isEqualToString:userId]) {
+            return user;
+        }
+    }
+    return nil;
 }
 
 - (void)reset {

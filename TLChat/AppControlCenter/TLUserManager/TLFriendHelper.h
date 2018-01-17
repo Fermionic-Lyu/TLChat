@@ -48,6 +48,10 @@
 
 + (TLFriendHelper *)sharedFriendHelper;
 
+- (void)reloadUsers;
+
+- (PFUser *)getPFUserByUserId:(NSString *)userId;
+
 - (TLUser *)getFriendInfoByUserID:(NSString *)userID;
 
 - (TLGroup *)getGroupInfoByGroupID:(NSString *)groupID;
