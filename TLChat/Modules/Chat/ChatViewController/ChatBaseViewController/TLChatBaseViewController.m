@@ -88,24 +88,30 @@
     [dialogQuery whereKey:@"user" equalTo:[PFUser currentUser]];
     [dialogQuery orderByDescending:@"updatedAt"];
     [dialogQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-        NSDate * localDeleteDate = nil;
-        if (object && object[@"localDeletedAt"]) {
-            localDeleteDate = object[@"localDeletedAt"];
-        }
+
         [self.query whereKey:@"dialogKey" equalTo:self.conversationKey]; //livequery doesn't work with pointer
         self.query.limit = 100;
         [self.query orderByDescending:@"createdAt"]; // get recent 1k msgs.
         if (messageIDToIgnore) {
             [self.query whereKey:@"objectId" notEqualTo:messageIDToIgnore];
         }
+        
+        NSDate * laterDate = nil;
+        
+        if (object && object[@"localDeletedAt"]) {
+            laterDate = object[@"localDeletedAt"];
+        }
         if (self.converstaion.lastReadDate) {
-            [self.query whereKey:@"createdAt" greaterThan:self.converstaion.lastReadDate];
-            
-            DLog(@"load message newer than %@", self.converstaion.lastReadDate);
+            if (!laterDate || [laterDate isEarlierThanDate:self.converstaion.lastReadDate]) {
+                laterDate = self.converstaion.lastReadDate;
+            }
         }
-        if (localDeleteDate) {
-            [self.query whereKey:@"createdAt" greaterThan:localDeleteDate];
+        
+        if (laterDate) {
+            [self.query whereKey:@"createdAt" greaterThan:laterDate];
+            DLog(@"load message newer than %@", laterDate);
         }
+        
         [self.query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
             // do client side sorting
             NSArray * sortedMessages = [objects sortedArrayUsingComparator:^NSComparisonResult(PFObject *  _Nonnull obj1, PFObject *  _Nonnull obj2) {
