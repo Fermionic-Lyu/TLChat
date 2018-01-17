@@ -97,9 +97,10 @@
                     if (conversation) {
                         [[TLMessageManager sharedInstance].conversationStore countUnreadMessages:conversation withCompletionBlock:^(NSInteger count) {
                             [[HSUIManager sharedManager] updateTabBadgeNumberOnIndex:1 withCompletionBlock:nil];
+                            [weakSelf updateConversationData];
                         }];
                     }
-                    [weakSelf updateConversationData];
+                    
 
                 }];
             }
@@ -116,10 +117,11 @@
                 if (conversation) {
                     [[TLMessageManager sharedInstance].conversationStore countUnreadMessages:conversation withCompletionBlock:^(NSInteger count){
                         [[HSUIManager sharedManager] updateTabBadgeNumberOnIndex:1 withCompletionBlock:nil];
+                        [weakSelf updateConversationData];
                     }];
                 }
                 
-               [weakSelf updateConversationData];
+               
             }];
         }
     }
