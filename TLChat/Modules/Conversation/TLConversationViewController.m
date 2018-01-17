@@ -92,7 +92,15 @@
                 TLUser * friend = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:friendID];
                 
                 [[TLFriendDataLoader sharedFriendDataLoader] createFriendDialogWithLatestMessage:friend completionBlock:^{
+                    
+                    TLConversation * conversation = [[TLMessageManager sharedInstance].conversationStore conversationByKey:conversationKey];
+                    if (conversation) {
+                        [[TLMessageManager sharedInstance].conversationStore countUnreadMessages:conversation withCompletionBlock:^(NSInteger count) {
+                            [[HSUIManager sharedManager] updateTabBadgeNumberOnIndex:1 withCompletionBlock:nil];
+                        }];
+                    }
                     [weakSelf updateConversationData];
+
                 }];
             }
         }else{
@@ -103,15 +111,21 @@
             
             
             [[TLGroupDataLoader sharedGroupDataLoader] createCourseDialogWithLatestMessage:group completionBlock:^{
+                
+                TLConversation * conversation = [[TLMessageManager sharedInstance].conversationStore conversationByKey:conversationKey];
+                if (conversation) {
+                    [[TLMessageManager sharedInstance].conversationStore countUnreadMessages:conversation withCompletionBlock:^(NSInteger count){
+                        [[HSUIManager sharedManager] updateTabBadgeNumberOnIndex:1 withCompletionBlock:nil];
+                    }];
+                }
+                
                [weakSelf updateConversationData];
             }];
         }
     }
     
-    [self updateConversationData]; 
-    
-    
-    
+    [self updateConversationData];    
+
 }
 
 

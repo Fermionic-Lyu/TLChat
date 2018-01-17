@@ -368,41 +368,26 @@
         
     }else{
         
-        PFQuery * query = [PFQuery queryWithClassName:kParseClassNameDialog];
-        [query whereKey:@"user" equalTo:[PFUser currentUser]];
-        [query whereKey:@"key" equalTo:key];
-        [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+        PFQuery * dialogQuery = [PFQuery queryWithClassName:kParseClassNameDialog];
+        [dialogQuery whereKey:@"user" equalTo:[PFUser currentUser]];
+        [dialogQuery whereKey:@"key" equalTo:key];
+        [dialogQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
             
-            if (object && object[@"lastReadDate"]) {
-                
-                [query whereKey:@"createdAt" greaterThan:object[@"lastReadDate"]];
-                
-                [query countObjectsInBackgroundWithBlock:^(int number, NSError * _Nullable error) {
-                    [self setUnreadNumberForConversationByUid:[TLUserHelper sharedHelper].userID key:key newUnreadCount:number];
-                    
-                    if (completionBlock) {
-                        completionBlock(number);
-                    }
-                    
-                    
-                }];
-            }else{
-                [query countObjectsInBackgroundWithBlock:^(int number, NSError * _Nullable error) {
-                    [self setUnreadNumberForConversationByUid:[TLUserHelper sharedHelper].userID key:key newUnreadCount:number];
-                    
-                    if (completionBlock) {
-                        completionBlock(number);
-                    }
-                    
-                }];
+            if (object && object[@"localDeletedAt"]) {
+                [query whereKey:@"createdAt" equalTo:object[@"localDeletedAt"]];
             }
-            
+            if (object[@"lastReadDate"]) {
+                [query whereKey:@"createdAt" greaterThan:object[@"lastReadDate"]];
+            }
+            [query countObjectsInBackgroundWithBlock:^(int number, NSError * _Nullable error) {
+                    [self setUnreadNumberForConversationByUid:[TLUserHelper sharedHelper].userID key:key newUnreadCount:number];
+                    
+                    if (completionBlock) {
+                        completionBlock(number);
+                    }
+                }];
         }];
-        
     }
-
-    
-
 }
 
 @end
