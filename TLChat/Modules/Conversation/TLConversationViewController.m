@@ -65,8 +65,6 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newConversation:) name:@"UNI_FRIEND_LIST_CHANGED_NOTIFICATION" object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConversationData) name:UIApplicationWillEnterForegroundNotification object:nil];
-    
     //self.definesPresentationContext = YES;
 }
 
