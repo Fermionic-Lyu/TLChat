@@ -210,6 +210,7 @@
         [_avatarButton.layer setCornerRadius:AVATAR_WIDTH/2.0f];
         //[_avatarButton.layer setBorderWidth:BORDER_WIDTH_1PX];
         //[_avatarButton.layer setBorderColor:[UIColor colorWithWhite:0.7 alpha:1.0].CGColor];
+        [_avatarButton.imageView setContentMode:UIViewContentModeScaleAspectFill];
         [_avatarButton addTarget:self action:@selector(avatarButtonDown:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _avatarButton;

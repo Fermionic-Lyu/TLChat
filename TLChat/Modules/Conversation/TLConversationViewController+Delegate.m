@@ -32,6 +32,7 @@
 //MARK: TLMessageManagerConvVCDelegate
 - (void)updateConversationData
 {
+    [[HSNetworkAdapter adapter] fetchNotificationSettingForConversations];
     [[TLMessageManager sharedInstance] refreshConversationRecord];
     
     [[TLMessageManager sharedInstance] conversationRecord:^(NSArray *data) {

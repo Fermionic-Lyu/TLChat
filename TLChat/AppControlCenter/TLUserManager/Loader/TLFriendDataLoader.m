@@ -176,16 +176,16 @@ static BOOL isLoadingData = NO;
                                                                                 localOnly:localOnly];
                 
             }else{
-                if (localDeleteDate) {
-                    
-                }else{
+//                if (localDeleteDate) {
+                
+//                }else{
                     [[TLMessageManager sharedInstance].conversationStore addConversationByUid:[PFUser currentUser].objectId
                                                                                           fid:friend.userID
                                                                                          type:TLConversationTypePersonal
                                                                                          date:friend.date
                                                                                  last_message:@"Let's start chat"
                                                                                     localOnly:localOnly];
-                };
+//                };
             }
             
             if (completionBlock) {
