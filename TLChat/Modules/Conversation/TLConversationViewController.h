@@ -9,6 +9,7 @@
 #import "TLTableViewController.h"
 #import "TLMessageManager+ConversationRecord.h"
 #import "TLFriendSearchViewController.h"
+#import "HSTableView.h"
 
 @import Parse;
 @import ParseLiveQuery;
@@ -21,7 +22,7 @@
 @property (nonatomic, strong) TLFriendSearchViewController *searchVC;
 
 @property (nonatomic, strong) NSMutableArray *data;
-@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) HSTableView *tableView;
 
 @property (nonatomic, strong) PFLiveQueryClient *client;
 @property (nonatomic, strong) PFQuery *query;

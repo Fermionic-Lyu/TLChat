@@ -35,8 +35,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //[self.navigationItem setTitle:@"1234"];
-
     
     [self p_initUI];        // 初始化界面UI
     
@@ -199,7 +197,7 @@
 
 - (UITableView *)tableView {
     if (!_tableView) {
-        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, self.view.frame.size.height - 113.0f)];
+        _tableView = [[HSTableView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, self.view.frame.size.height - 113.0f)];
         [self registerCellClass];
         [_tableView setBackgroundColor:[UIColor whiteColor]];
         [_tableView setDelegate:self];
@@ -207,9 +205,23 @@
         [_tableView setTableFooterView:[UIView new]];
         [_tableView setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
         [_tableView setSeparatorInset:UIEdgeInsetsZero];
+        [_tableView setBackgroundColor:[UIColor colorWithHexString:@"EFEFF4"]];
+        WS(weakSelf);
+        [_tableView addRefreshActionHandler:^{
+            [weakSelf refreshAllConversations];
+        }];
         
     }
     return _tableView;
+}
+
+- (void)refreshAllConversations {
+    [[TLMessageManager sharedInstance] conversationRecord:^(NSArray *data) {
+        for (TLConversation *conversation in data) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"NewChatMessageReceived" object:conversation.key];
+        }
+        
+    }];
 }
 
 #pragma mark - Getter -

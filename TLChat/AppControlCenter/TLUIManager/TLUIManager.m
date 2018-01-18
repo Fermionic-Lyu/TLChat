@@ -7,6 +7,7 @@
 //
 
 #import "TLUIManager.h"
+#import "TLUserHelper.h"
 #import "TLChatViewController.h"
 #import "TLFriendDetailViewController.h"
 
@@ -59,6 +60,8 @@ static TLUIManager *uiManager = nil;
     vc.conversationKey = dialogKey;
     
     [navigationController pushViewController:vc animated:YES];
+    
+    [[TLMessageManager sharedInstance].conversationStore updateLastReadDateForConversationByUid:[TLUserHelper sharedHelper].user.userID key:dialogKey];
  
 }
 

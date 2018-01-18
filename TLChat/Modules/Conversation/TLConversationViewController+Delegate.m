@@ -54,7 +54,10 @@
         self.data = [[NSMutableArray alloc] initWithArray:data];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-             [self.tableView reloadData];
+            [self.tableView reloadData];
+            if ([self.tableView.mj_header isRefreshing]) {
+                [self.tableView.mj_header endRefreshing];
+            }
         });
         
         DLog(@"calculated totle unread count: %ld", totalUnreadCount);
