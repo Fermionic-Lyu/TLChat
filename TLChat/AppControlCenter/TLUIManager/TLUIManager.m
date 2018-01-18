@@ -10,6 +10,8 @@
 #import "TLUserHelper.h"
 #import "TLChatViewController.h"
 #import "TLFriendDetailViewController.h"
+#import "TLGroupDataLoader.h"
+#import "TLFriendDataLoader.h"
 
 @implementation TLUIManager
 
@@ -55,14 +57,28 @@ static TLUIManager *uiManager = nil;
         
     }
     
+    
     TLChatViewController * vc = [TLChatViewController new];
     
-    vc.conversationKey = dialogKey;
+    NSArray * users = [dialogKey componentsSeparatedByString:@":"];
+    if (users.count > 1) {
+        NSArray * matches = [users filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != %@", [TLUserHelper sharedHelper].userID]];
+        if (matches.count > 0) {
+            NSString * friendID = matches.firstObject;
+            TLUser * friend = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:friendID];
+            [vc setPartner:(id<TLChatUserProtocol>)friend];
+            [navigationController pushViewController:vc animated:YES];
+            [[TLFriendDataLoader sharedFriendDataLoader] createFriendDialogWithLatestMessage:friend completionBlock:nil];
+        }
+    } else {
+        TLGroup * group = [[TLFriendHelper sharedFriendHelper] getGroupInfoByGroupID:dialogKey];
+        [vc setPartner:(id<TLChatUserProtocol>)group];
+        [navigationController pushViewController:vc animated:YES];
+        [[TLGroupDataLoader sharedGroupDataLoader] createCourseDialogWithLatestMessage:group completionBlock:nil];
+    }
     
-    [navigationController pushViewController:vc animated:YES];
     
-    [[TLMessageManager sharedInstance].conversationStore updateLastReadDateForConversationByUid:[TLUserHelper sharedHelper].user.userID key:dialogKey];
- 
+    
 }
 
 - (void)openUserDetails:(TLUser *)user navigationController:(UINavigationController*)navigationController {

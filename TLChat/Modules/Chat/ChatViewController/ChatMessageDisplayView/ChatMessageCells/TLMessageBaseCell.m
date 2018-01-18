@@ -15,7 +15,7 @@
 #define     TIMELABEL_SPACE_Y   15.0f
 
 #define     NAMELABEL_HEIGHT    14.0f
-#define     NAMELABEL_SPACE_X   11.0f
+#define     NAMELABEL_SPACE_X   10.0f
 #define     NAMELABEL_SPACE_Y   1.0f
 
 #define     AVATAR_WIDTH        30.0f
@@ -48,7 +48,8 @@
 
 - (void)setMessage:(TLMessage *)message
 {
-    message.showName = message.partnerType == TLPartnerTypeGroup;
+    message.showName = message.partnerType == TLPartnerTypeGroup && message.ownerTyper != TLMessageOwnerTypeSelf;
+    
     if (_message && [_message.messageID isEqualToString:message.messageID]) {
         return;
     }
@@ -100,7 +101,7 @@
         // 背景
         [self.messageBackgroundView mas_remakeConstraints:^(MASConstraintMaker *make) {
             message.ownerTyper == TLMessageOwnerTypeSelf ? make.right.mas_equalTo(self.avatarButton.mas_left).mas_offset(-MSGBG_SPACE_X) : make.left.mas_equalTo(self.avatarButton.mas_right).mas_offset(MSGBG_SPACE_X);
-            make.top.mas_equalTo(self.usernameLabel.mas_bottom).mas_offset(message.showName ? 0 : -MSGBG_SPACE_Y);
+            make.top.mas_equalTo(self.usernameLabel.mas_bottom).mas_offset(message.showName ? 1 : -MSGBG_SPACE_Y);
         }];
         
         [self.failureView mas_remakeConstraints:^(MASConstraintMaker *make) {

@@ -31,6 +31,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     TLMessage * message = self.data[indexPath.row];
+    
     if (message.messageType == TLMessageTypeText) {
         TLTextMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TLTextMessageCell"];
         [cell setMessage:message];

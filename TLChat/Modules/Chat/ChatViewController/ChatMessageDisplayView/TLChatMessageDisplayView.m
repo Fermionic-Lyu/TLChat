@@ -98,7 +98,7 @@
     [self.tableView endUpdates];
     [UIView setAnimationsEnabled:YES];
 
-    [self.tableView scrollToRowAtIndexPath:indexPathForLastRow atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+    [self.tableView scrollToRowAtIndexPath:indexPathForLastRow atScrollPosition:UITableViewScrollPositionTop animated:NO];
 }
 
 - (void)setData:(NSMutableArray *)data
@@ -168,7 +168,7 @@
     NSIndexPath * indexPathForLastRow = [NSIndexPath indexPathForRow:self.data.count - 1 inSection:0];
    
     
-    [self.tableView scrollToRowAtIndexPath:indexPathForLastRow atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+    [self.tableView scrollToRowAtIndexPath:indexPathForLastRow atScrollPosition:UITableViewScrollPositionTop animated:NO];
 }
 
 - (void)setDisablePullToRefresh:(BOOL)disablePullToRefresh
