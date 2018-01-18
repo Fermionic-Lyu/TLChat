@@ -143,9 +143,11 @@
     __block NSInteger time_count = 0;
     TLVoiceMessage *message = [[TLVoiceMessage alloc] init];
     message.ownerTyper = TLMessageOwnerTypeSelf;
+    
     message.userID = [TLUserHelper sharedHelper].userID;
     message.fromUser = (id<TLChatUserProtocol>)[TLUserHelper sharedHelper].user;
     message.msgStatus = TLVoiceMessageStatusRecording;
+    message.partnerType = [self.partner chat_userType];
     message.date = [NSDate date];
     [[TLAudioRecorder sharedRecorder] startRecordingWithVolumeChangedBlock:^(CGFloat volume) {
         time_count ++;

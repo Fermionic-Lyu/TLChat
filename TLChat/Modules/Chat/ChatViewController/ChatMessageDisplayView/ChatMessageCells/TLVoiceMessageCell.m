@@ -60,7 +60,7 @@
             }];
             [self.voiceImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.right.mas_equalTo(-13);
-                make.centerY.mas_equalTo(self.avatarButton);
+                make.centerY.mas_equalTo(self.messageBackgroundView.mas_centerY);
             }];
         }
         else if (message.ownerTyper == TLMessageOwnerTypeFriend){
@@ -78,7 +78,7 @@
             }];
             [self.voiceImageView mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.left.mas_equalTo(13);
-                make.centerY.mas_equalTo(self.avatarButton);
+                make.centerY.mas_equalTo(self.messageBackgroundView.mas_centerY);
             }];
         }
     }

@@ -15,7 +15,7 @@
 #define     TIMELABEL_SPACE_Y   15.0f
 
 #define     NAMELABEL_HEIGHT    14.0f
-#define     NAMELABEL_SPACE_X   12.0f
+#define     NAMELABEL_SPACE_X   11.0f
 #define     NAMELABEL_SPACE_Y   1.0f
 
 #define     AVATAR_WIDTH        30.0f
@@ -48,6 +48,7 @@
 
 - (void)setMessage:(TLMessage *)message
 {
+    message.showName = message.partnerType == TLPartnerTypeGroup;
     if (_message && [_message.messageID isEqualToString:message.messageID]) {
         return;
     }
@@ -220,8 +221,8 @@
 {
     if (_usernameLabel == nil) {
         _usernameLabel = [[UILabel alloc] init];
-        [_usernameLabel setTextColor:[UIColor grayColor]];
-        [_usernameLabel setFont:[UIFont systemFontOfSize:12.0f]];
+        [_usernameLabel setTextColor:[UIColor colorWithHexString:@"9B9B9B"]];
+        [_usernameLabel setFont:[UIFont systemFontOfSize:11.0f]];
     }
     return _usernameLabel;
 }
