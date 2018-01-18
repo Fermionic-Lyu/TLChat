@@ -98,7 +98,11 @@
 //        default:
 //            break;
 //    }
-    [self.unreadLabel setText:[NSString stringWithFormat:@"%ld",(long)conversation.unreadCount]];
+    if (conversation.unreadCount > 99) {
+        [self.unreadLabel setText:@"···"];
+    } else {
+        [self.unreadLabel setText:[NSString stringWithFormat:@"%ld",(long)conversation.unreadCount]];
+    }
     self.conversation.isRead ? [self markAsRead] : [self markAsUnread];
 }
 
