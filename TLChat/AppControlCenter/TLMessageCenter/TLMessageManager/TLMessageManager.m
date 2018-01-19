@@ -9,6 +9,8 @@
 #import "TLMessageManager.h"
 #import "TLMessageManager+ConversationRecord.h"
 #import "TLUserHelper.h"
+#import "NSFileManager+TLChat.h"
+
 #import "TLMacros.h"
 
 static TLMessageManager *messageManager;
@@ -22,6 +24,105 @@ static TLMessageManager *messageManager;
         messageManager = [[TLMessageManager alloc] init];
     });
     return messageManager;
+}
+
++ (TLTextMessage *)handleTextMessage:(PFObject *)message {
+    
+    NSDictionary * dict = [message[@"message"] mj_JSONObject];
+    
+    TLTextMessage *textMessage = [[TLTextMessage alloc] init];
+    textMessage.SavedOnServer = YES;
+    textMessage.messageID = message.objectId;
+    textMessage.date = message.createdAt;
+    
+    TLUser * friend = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:message[@"sender"]];
+    textMessage.fromUser = (id<TLChatUserProtocol>)friend;
+    textMessage.userID = [TLUserHelper sharedHelper].userID;
+    
+    if ([friend.userID isEqualToString:textMessage.userID]) {
+        textMessage.ownerTyper = TLMessageOwnerTypeSelf;
+    }else{
+        textMessage.ownerTyper = TLMessageOwnerTypeFriend;
+    }
+
+    textMessage.text = dict[@"text"];
+    return textMessage;
+}
+
++ (TLVoiceMessage *)handleVoiceMessage:(PFObject *)message {
+    NSDictionary * dict = [message[@"message"] mj_JSONObject];
+    
+    TLVoiceMessage *voiceMessage = [[TLVoiceMessage alloc] init];
+    voiceMessage.SavedOnServer = YES;
+    voiceMessage.messageID = message.objectId;
+    voiceMessage.date = message.createdAt;
+    
+    TLUser * friend = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:message[@"sender"]];
+    voiceMessage.fromUser = (id<TLChatUserProtocol>)friend;
+    voiceMessage.userID = [TLUserHelper sharedHelper].userID;
+    
+    if ([friend.userID isEqualToString:voiceMessage.userID]) {
+        voiceMessage.ownerTyper = TLMessageOwnerTypeSelf;
+    }else{
+        voiceMessage.ownerTyper = TLMessageOwnerTypeFriend;
+    }
+    
+    
+    NSString *fileName = dict[@"path"];
+    NSString *filePath = [NSFileManager pathUserChatVoice:fileName];
+    
+    
+    voiceMessage.recFileName = fileName;
+    voiceMessage.time = [dict[@"time"] floatValue];
+    voiceMessage.msgStatus = TLVoiceMessageStatusNormal;
+    
+    PFFile * file = message[@"attachment"];
+    
+    if (file && ![file isKindOfClass:[NSNull class]]) {
+        [file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+            if (!error) {
+                
+                if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+                    [[NSFileManager defaultManager] createFileAtPath:filePath contents:data attributes:nil];
+                }
+                
+            } else {
+                
+            }
+        }];
+    }
+    return voiceMessage;
+}
+
++ (TLImageMessage *)handleImageMessage:(PFObject *)message {
+    
+    NSDictionary * dict = [message[@"message"] mj_JSONObject];
+    TLImageMessage *imageMessage = [[TLImageMessage alloc] init];
+    imageMessage.SavedOnServer = YES;
+    imageMessage.messageID = message.objectId;
+    imageMessage.date = message.createdAt;
+    
+    TLUser * friend = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:message[@"sender"]];
+    imageMessage.fromUser = (id<TLChatUserProtocol>)friend;
+    imageMessage.userID = [TLUserHelper sharedHelper].userID;
+    
+    if ([friend.userID isEqualToString:imageMessage.userID]) {
+        imageMessage.ownerTyper = TLMessageOwnerTypeSelf;
+    }else{
+        imageMessage.ownerTyper = TLMessageOwnerTypeFriend;
+    }
+    
+    PFFile * file = message[@"thumbnail"];
+    if (dict[@"w"] && dict[@"h"]) {
+        imageMessage.imageSize = CGSizeMake([dict[@"w"] floatValue], [dict[@"h"] floatValue]);
+    }
+    
+    imageMessage.thumbnailImageURL = file.url;
+    //    message1.thumbnailImagePath = imageName; //no path needed here, cell will prefix it when rendering
+    PFFile * attachment =  message[@"attachment"];
+    imageMessage.imageURL = attachment.url;
+    
+    return imageMessage;
 }
 
 - (void)sendMessage:(TLMessage *)message

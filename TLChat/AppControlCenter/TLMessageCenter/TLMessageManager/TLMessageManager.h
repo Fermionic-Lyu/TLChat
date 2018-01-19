@@ -10,6 +10,9 @@
 #import "TLDBMessageStore.h"
 #import "TLDBConversationStore.h"
 #import "TLMessage.h"
+#import "TLTextMessage.h"
+#import "TLVoiceMessage.h"
+#import "TLImageMessage.h"
 
 #import "TLMessageManagerChatVCDelegate.h"
 #import "TLMessageManagerConvVCDelegate.h"
@@ -26,6 +29,10 @@
 @property (nonatomic, strong) TLDBConversationStore *conversationStore;
 
 + (TLMessageManager *)sharedInstance;
+
++ (TLTextMessage *)handleTextMessage:(PFObject *)message;
++ (TLVoiceMessage *)handleVoiceMessage:(PFObject *)message;
++ (TLImageMessage *)handleImageMessage:(PFObject *)message;
 
 #pragma mark - 发送
 - (void)sendMessage:(TLMessage *)message
