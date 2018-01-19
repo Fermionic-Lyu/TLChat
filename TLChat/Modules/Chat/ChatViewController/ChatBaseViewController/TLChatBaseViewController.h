@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "HSUIViewController.h"
 #import "TLChatViewControllerProxy.h"
 #import "TLChatMessageDisplayView.h"
 #import "TLEmojiDisplayView.h"
@@ -24,7 +23,7 @@
 #import "TLUser.h"
 #import "TLConversation.h"
 
-@interface TLChatBaseViewController : HSUIViewController <TLChatViewControllerProxy, TLMoreKeyboardDelegate>
+@interface TLChatBaseViewController : UIViewController <TLChatViewControllerProxy, TLMoreKeyboardDelegate>
 {
     TLChatBarStatus lastStatus;
     TLChatBarStatus curStatus;

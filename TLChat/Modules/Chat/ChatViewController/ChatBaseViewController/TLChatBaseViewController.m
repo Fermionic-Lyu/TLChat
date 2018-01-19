@@ -81,7 +81,6 @@
 
 - (void)loadMessagesWithCompletionBlock:(void(^)())completionBlcok messageIDToIgnore:(NSString *)messageIDToIgnore{
     
-    [self showWaitAlert];
     self.query = [PFQuery queryWithClassName:kParseClassNameMessage];
     
     PFQuery *dialogQuery = [PFQuery queryWithClassName:kParseClassNameDialog];
@@ -130,7 +129,6 @@
             if (completionBlcok) {
                 completionBlcok();
             }
-            [self hideWaitAlert];
         }];
         
     }];
