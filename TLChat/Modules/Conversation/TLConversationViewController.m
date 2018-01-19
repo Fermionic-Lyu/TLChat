@@ -58,6 +58,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConversationData) name:kAKFriendsAndGroupDataUpdateNotification object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConversationData) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newChatMessageArrive:) name:@"NewChatMessageReceived" object:nil];
     
