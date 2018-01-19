@@ -58,7 +58,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConversationData) name:kAKFriendsAndGroupDataUpdateNotification object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConversationData) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateConversationData) name:UIApplicationWillEnterForegroundNotification object:nil];
     
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newChatMessageArrive:) name:@"NewChatMessageReceived" object:nil];
@@ -96,7 +96,7 @@
                     TLConversation * conversation = [[TLMessageManager sharedInstance].conversationStore conversationByKey:conversationKey];
                     if (conversation) {
                         [[TLMessageManager sharedInstance].conversationStore countUnreadMessages:conversation withCompletionBlock:^(NSInteger count) {
-                            [[HSUIManager sharedManager] updateTabBadgeNumberOnIndex:1 withCompletionBlock:nil];
+//                            [[HSUIManager sharedManager] updateTabBadgeNumberOnIndex:1 withCompletionBlock:nil];
                             [weakSelf updateConversationData];
                         }];
                     }
@@ -116,7 +116,7 @@
                 TLConversation * conversation = [[TLMessageManager sharedInstance].conversationStore conversationByKey:conversationKey];
                 if (conversation) {
                     [[TLMessageManager sharedInstance].conversationStore countUnreadMessages:conversation withCompletionBlock:^(NSInteger count){
-                        [[HSUIManager sharedManager] updateTabBadgeNumberOnIndex:1 withCompletionBlock:nil];
+//                        [[HSUIManager sharedManager] updateTabBadgeNumberOnIndex:1 withCompletionBlock:nil];
                         [weakSelf updateConversationData];
                     }];
                 }
