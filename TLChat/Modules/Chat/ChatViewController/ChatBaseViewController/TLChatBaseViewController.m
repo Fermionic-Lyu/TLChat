@@ -72,6 +72,7 @@
 }
 
 - (void)newChatMessageArrive:(NSNotification*)notificaion {
+    
     if ([notificaion.object isEqualToString:self.conversationKey]) {
         [self loadMessagesWithCompletionBlock:^{
 
@@ -230,8 +231,7 @@
     if (event.type == PFLiveQueryEventTypeCreated) {
         PFObject * message = event.object;
         NSLog(@"new message added: %@", message);
-        
-        //
+
         [self loadMessagesWithCompletionBlock:^{
             [self processMessageFromServer:message bypassMine:YES];
         } messageIDToIgnore:message.objectId];
@@ -249,7 +249,6 @@
 - (void)liveQuery:(PFQuery<PFObject *> *)query didEncounterError:(NSError *)error inClient:(PFLiveQueryClient *)client {
     NSLog(@"error: %@", error.localizedDescription);
     
-//    [self.client reconnect];
 }
 
 - (void)processMessageFromServer:(PFObject *)message bypassMine:(BOOL)bypassMine{
@@ -257,8 +256,6 @@
     DLog(@"message received: %@ %@ %@", message.objectId, message[@"message"], message[@"sender"]);
     
     NSDictionary * dict = [message[@"message"] mj_JSONObject];
-    
- 
     
     if (dict ) {
         if (dict[@"text"]) {
@@ -274,24 +271,8 @@
 }
 
 - (void)handleTextMessage:(PFObject *)message bypassMine:(BOOL)bypassMine{
-//    NSDictionary * dict = [message[@"message"] mj_JSONObject];
     __weak TLChatBaseViewController * weakSelf = self;
-//    TLTextMessage *message1 = [[TLTextMessage alloc] init];
-//    message1.SavedOnServer = YES;
-//    message1.messageID = message.objectId;
-//    message1.date = message.createdAt;
-//
-//    TLUser * friend = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:message[@"sender"]];
-//    message1.fromUser = friend;
-//
-//    if ([friend.userID isEqualToString: [TLUserHelper sharedHelper].userID]) {
-//        message1.ownerTyper = TLMessageOwnerTypeSelf;
-//    }else{
-//        message1.ownerTyper = TLMessageOwnerTypeFriend;
-//    }
-//
-//    message1.userID = [TLUserHelper sharedHelper].userID;
-//    message1.text = dict[@"text"];
+
     TLTextMessage *message1 = [TLMessageManager handleTextMessage:message];
     if (bypassMine && message1.ownerTyper == TLMessageOwnerTypeSelf) {
         
@@ -307,7 +288,6 @@
 
 - (BOOL)isLocalMessage:(PFObject*)message {
     if (message[@"localID"]) {
-        
         NSArray * matches = [self.messageDisplayView.data filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"messageID == %@", message[@"localID"]]];
         return (matches.count > 0);
     }
@@ -316,7 +296,6 @@
 
 - (BOOL)hasDownloaded:(PFObject*)message {
     if (message.objectId) {
-        
         NSArray * matches = [self.messageDisplayView.data filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"messageID == %@", message.objectId]];
         return (matches.count > 0);
     }
@@ -329,33 +308,6 @@
     NSDictionary * dict = [message[@"message"] mj_JSONObject];
     
     TLImageMessage *message1 = [TLMessageManager handleImageMessage:message];
-//    message1.SavedOnServer = YES;
-//    message1.messageID = message.objectId;
-//    message1.date = message.createdAt;
-//
-//    TLUser * friend = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:message[@"sender"]];
-//    message1.fromUser = friend;
-//
-//    if ([friend.userID isEqualToString: [TLUserHelper sharedHelper].userID]) {
-//        message1.ownerTyper = TLMessageOwnerTypeSelf;
-//    }else{
-//        message1.ownerTyper = TLMessageOwnerTypeFriend;
-//    }
-//
-//    message1.userID = [TLUserHelper sharedHelper].userID;
-//
-//    PFFile * file = message[@"thumbnail"];
-//    if (dict[@"w"] && dict[@"h"]) {
-//        message1.imageSize = CGSizeMake([dict[@"w"] floatValue], [dict[@"h"] floatValue]);
-//    }
-//
-////    NSString *imageName = [NSString stringWithFormat:@"thumb-%@", dict[@"path"]];
-////    NSString *imagePath = [NSFileManager pathUserChatImage:imageName];
-//
-//    message1.thumbnailImageURL = file.url;
-////    message1.thumbnailImagePath = imageName; //no path needed here, cell will prefix it when rendering
-//    PFFile * attachment =  message[@"attachment"];
-//    message1.imageURL = attachment.url;
     
     if (bypassMine && message1.ownerTyper == TLMessageOwnerTypeSelf) {
         
@@ -367,52 +319,11 @@
         }
     }
     
-//    if (file && ![file isKindOfClass:[NSNull class]]) {
-//
-//
-//        [file getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
-//            if (!error) {
-//
-//                if (![[NSFileManager defaultManager] fileExistsAtPath:imagePath]) {
-//                    [[NSFileManager defaultManager] createFileAtPath:imagePath contents:imageData attributes:nil];
-//                }
-//
-//
-//            } else {
-//
-//            }
-//        }];
-//    }
-    
-    
 }
 
 - (void)handleVoiceMessage:(PFObject *)message bypassMine:(BOOL)bypassMine{
     __weak TLChatBaseViewController * weakSelf = self;
-//    NSDictionary * dict = [message[@"message"] mj_JSONObject];
-//
-//    TLVoiceMessage *message1 = [[TLVoiceMessage alloc] init];
-//    message1.SavedOnServer = YES;
-//    message1.messageID = message.objectId;
-//    message1.date = message.createdAt;
-//
-//    TLUser * friend = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:message[@"sender"]];
-//    message1.fromUser = friend;
-//
-//    if ([friend.userID isEqualToString: [TLUserHelper sharedHelper].userID]) {
-//        message1.ownerTyper = TLMessageOwnerTypeSelf;
-//    }else{
-//        message1.ownerTyper = TLMessageOwnerTypeFriend;
-//    }
-//
-//    message1.userID = [TLUserHelper sharedHelper].userID;
-//    NSString *fileName = dict[@"path"];
-//    NSString *filePath = [NSFileManager pathUserChatVoice:fileName];
-//
-//
-//    message1.recFileName = fileName;
-//    message1.time = [dict[@"time"] floatValue];
-//    message1.msgStatus = TLVoiceMessageStatusNormal;
+
     TLVoiceMessage *message1 = [TLMessageManager handleVoiceMessage:message];
     
     if (bypassMine && message1.ownerTyper == TLMessageOwnerTypeSelf) {
@@ -424,23 +335,6 @@
             [weakSelf receivedMessage:message1];
         }
     }
-//
-//    PFFile * file = message[@"attachment"];
-//
-//    if (file && ![file isKindOfClass:[NSNull class]]) {
-//        [file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-//            if (!error) {
-//
-//                if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-//                    [[NSFileManager defaultManager] createFileAtPath:filePath contents:data attributes:nil];
-//                }
-//
-//            } else {
-//
-//            }
-//        }];
-//    }
-    
     
 }
 

@@ -96,6 +96,7 @@
             else {
                 make.left.mas_equalTo(self.avatarButton.mas_right).mas_equalTo(NAMELABEL_SPACE_X);
             }
+            make.width.mas_lessThanOrEqualTo(250.0f);
         }];
         
         // 背景
