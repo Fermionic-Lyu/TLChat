@@ -135,10 +135,14 @@ static BOOL isLoadingData = NO;
     });
 }
 
-- (void)createFriendDialogWithUserIdWithLatestMessage:(NSString *)userId completionBlock:(void (^)())completionBlock {
+- (void)createNewFriendDialogWithUserIdWithLatestMessage:(NSString *)userId completionBlock:(void (^)())completionBlock {
     TLUser *friend = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:userId];
     friend.date = [NSDate date];
-    [self createFriendDialogWithLatestMessage:friend completionBlock:nil];
+    [self createFriendDialogWithLatestMessage:friend completionBlock:^{
+        if (completionBlock) {
+            completionBlock();
+        }
+    }];
 }
 
 

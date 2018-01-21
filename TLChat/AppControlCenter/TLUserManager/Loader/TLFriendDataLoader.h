@@ -17,6 +17,6 @@
 
 - (void)recreateLocalDialogsForFriendsWithCompletionBlock:(void(^)())completionBlock;
 
-- (void)createFriendDialogWithUserIdWithLatestMessage:(NSString *)userId completionBlock:(void (^)())completionBlock;
+- (void)createNewFriendDialogWithUserIdWithLatestMessage:(NSString *)userId completionBlock:(void (^)())completionBlock;
 - (void)createFriendDialogWithLatestMessage:(TLUser *)friend completionBlock:(void(^)())completionBlock;
 @end

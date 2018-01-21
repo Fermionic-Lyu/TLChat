@@ -71,9 +71,8 @@
 - (void)newConversation:(NSNotification *)notification {
     if (notification.object) {
         NSString *userId = notification.object;
-        TLUser *friend = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:userId];
-        friend.date = [NSDate date];
-        [[TLFriendDataLoader sharedFriendDataLoader] createFriendDialogWithLatestMessage:friend completionBlock:nil];
+
+        [[TLFriendDataLoader sharedFriendDataLoader] createNewFriendDialogWithUserIdWithLatestMessage:userId completionBlock:nil];
     }
 }
 
