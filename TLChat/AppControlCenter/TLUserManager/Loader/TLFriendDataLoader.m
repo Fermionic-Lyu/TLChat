@@ -135,6 +135,13 @@ static BOOL isLoadingData = NO;
     });
 }
 
+- (void)createFriendDialogWithUserIdWithLatestMessage:(NSString *)userId completionBlock:(void (^)())completionBlock {
+    TLUser *friend = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:userId];
+    friend.date = [NSDate date];
+    [self createFriendDialogWithLatestMessage:friend completionBlock:nil];
+}
+
+
 - (void)createFriendDialogWithLatestMessage:(TLUser *)friend completionBlock:(void(^)())completionBlock
 {
     NSString * key = [[TLFriendHelper sharedFriendHelper] makeDialogNameForFriend:friend.userID myId:[PFUser currentUser].objectId];

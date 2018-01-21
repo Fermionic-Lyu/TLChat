@@ -96,7 +96,6 @@
                     TLConversation * conversation = [[TLMessageManager sharedInstance].conversationStore conversationByKey:conversationKey];
                     if (conversation) {
                         [[TLMessageManager sharedInstance].conversationStore countUnreadMessages:conversation withCompletionBlock:^(NSInteger count) {
-//                            [[HSUIManager sharedManager] updateTabBadgeNumberOnIndex:1 withCompletionBlock:nil];
                             [weakSelf updateConversationData];
                         }];
                     }
@@ -116,7 +115,6 @@
                 TLConversation * conversation = [[TLMessageManager sharedInstance].conversationStore conversationByKey:conversationKey];
                 if (conversation) {
                     [[TLMessageManager sharedInstance].conversationStore countUnreadMessages:conversation withCompletionBlock:^(NSInteger count){
-//                        [[HSUIManager sharedManager] updateTabBadgeNumberOnIndex:1 withCompletionBlock:nil];
                         [weakSelf updateConversationData];
                     }];
                 }
@@ -129,8 +127,6 @@
     [self updateConversationData];    
 
 }
-
-
 
 - (void)viewWillAppear:(BOOL)animated
 {
