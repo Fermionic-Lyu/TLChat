@@ -194,7 +194,7 @@
 
 - (UITableView *)tableView {
     if (!_tableView) {
-        _tableView = [[HSTableView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, self.view.frame.size.height - 113.0f)];
+        _tableView = [[HSTableView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, SAFEAREA_INSETS.bottom > 0 ? self.view.frame.size.height - SAFEAREA_INSETS.bottom - 137.0f : self.view.frame.size.height - 113.0f)];
         [self registerCellClass];
         [_tableView setBackgroundColor:[UIColor whiteColor]];
         [_tableView setDelegate:self];
