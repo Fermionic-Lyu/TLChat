@@ -39,7 +39,7 @@
     if (animation) {
         [UIView animateWithDuration:0.3 animations:^{
             [self mas_updateConstraints:^(MASConstraintMaker *make) {
-                make.bottom.mas_equalTo(view);
+                make.bottom.mas_equalTo(view).mas_offset(-SAFEAREA_INSETS.bottom);
             }];
             [view layoutIfNeeded];
             if (self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(chatKeyboard:didChangeHeight:)]) {
@@ -53,7 +53,7 @@
     }
     else {
         [self mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.bottom.mas_equalTo(view);
+            make.bottom.mas_equalTo(view).mas_offset(-SAFEAREA_INSETS.bottom);
         }];
         [view layoutIfNeeded];
         if (self.keyboardDelegate && [self.keyboardDelegate respondsToSelector:@selector(chatKeyboardDidShow:animated:)]) {

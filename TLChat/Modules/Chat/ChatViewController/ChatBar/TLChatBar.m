@@ -383,14 +383,14 @@ static NSString *textRec = @"";
     }];
     
     [self.voiceButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(self).mas_offset(-7);
+        make.bottom.mas_equalTo(self).mas_offset(-7-SAFEAREA_INSETS.bottom);
         make.left.mas_equalTo(self.modeButton.mas_right).mas_offset(1);
         make.width.mas_equalTo(38);
     }];
     
     [self.textView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self).mas_offset(7);
-        make.bottom.mas_equalTo(self).mas_offset(-7);
+        make.bottom.mas_equalTo(self).mas_offset(-7-SAFEAREA_INSETS.bottom);
         make.left.mas_equalTo(self.voiceButton.mas_right).mas_offset(4);
         make.right.mas_equalTo(self.emojiButton.mas_left).mas_offset(-4);
         make.height.mas_equalTo(HEIGHT_CHATBAR_TEXTVIEW);
