@@ -122,8 +122,9 @@
         BOOL ok = [self.delegate chatMessageDisplayView:self deleteMessage:message];
         if (ok) {
             [self.data removeObject:message];
-            [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:animation ? UITableViewRowAnimationAutomatic : UITableViewRowAnimationNone];
-//            [MobClick event:EVENT_DELETE_MESSAGE];
+            if ([self.tableView numberOfRowsInSection:0] > index) {
+                [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:animation ? UITableViewRowAnimationAutomatic : UITableViewRowAnimationNone];
+            }
         }
         else {
             [TLUIUtility showAlertWithTitle:@"Error" message:@"Failed to delete message from database."];

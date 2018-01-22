@@ -22,10 +22,6 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.messageDisplayView addMessage:message];
-        
-        
-        // doesnt really work, scroll to bottom implemented in add message anyway.
-//        [self.messageDisplayView scrollToBottomWithAnimation:YES];
     });
 }
 
