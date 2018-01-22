@@ -25,34 +25,47 @@
 //MARK: TLMoreKeyboardDelegate
 - (void)moreKeyboard:(id)keyboard didSelectedFunctionItem:(TLMoreKeyboardItem *)funcItem
 {
+    WS(weakSelf);
     if (funcItem.type == TLMoreKeyboardItemTypeCamera || funcItem.type == TLMoreKeyboardItemTypeImage) {
         UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
         if (funcItem.type == TLMoreKeyboardItemTypeCamera) {
             if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
                 [imagePickerController setSourceType:UIImagePickerControllerSourceTypeCamera];
+                [HSCommon checkCameraPermissionWithFinishBlock:^(BOOL ok) {
+                    if (ok) {
+                        [self presentViewController:imagePickerController animated:YES completion:nil];
+                        [imagePickerController.rac_imageSelectedSignal subscribeNext:^(id x) {
+                            [imagePickerController dismissViewControllerAnimated:YES completion:^{
+                                UIImage *image = [x objectForKey:UIImagePickerControllerOriginalImage];
+                                [weakSelf sendImageMessage:image];
+                            }];
+                        } completed:^{
+                            [imagePickerController dismissViewControllerAnimated:YES completion:nil];
+                        }];
+                    }
+                }];
             }
             else {
                 [TLUIUtility showAlertWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"CAMERA_INITIALIZATION_FAILED", nil)];
                 return;
             }
-        }
-        else {
+        } else {
             [imagePickerController setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-        }
-        [self presentViewController:imagePickerController animated:YES completion:nil];
-        __weak typeof(self) weakSelf = self;
-        [imagePickerController.rac_imageSelectedSignal subscribeNext:^(id x) {
-            [imagePickerController dismissViewControllerAnimated:YES completion:^{
-                UIImage *image = [x objectForKey:UIImagePickerControllerOriginalImage];
-                [weakSelf sendImageMessage:image];
+            [HSCommon checkPhotoLibraryPermissionWithFinishBlock:^(BOOL ok) {
+                if (ok) {
+                    [self presentViewController:imagePickerController animated:YES completion:nil];
+                    [imagePickerController.rac_imageSelectedSignal subscribeNext:^(id x) {
+                        [imagePickerController dismissViewControllerAnimated:YES completion:^{
+                            UIImage *image = [x objectForKey:UIImagePickerControllerOriginalImage];
+                            [weakSelf sendImageMessage:image];
+                        }];
+                    } completed:^{
+                        [imagePickerController dismissViewControllerAnimated:YES completion:nil];
+                    }];
+                }
             }];
-        } completed:^{
-            [imagePickerController dismissViewControllerAnimated:YES completion:nil];
-        }];
-    }
-    else {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"选中”%@“ 按钮", funcItem.title] delegate:nil cancelButtonTitle:@"确定" otherButtonTitles: nil];
-        [alert show];
+        }
+        
     }
 }
 
