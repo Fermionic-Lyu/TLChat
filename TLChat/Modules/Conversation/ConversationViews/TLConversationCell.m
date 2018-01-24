@@ -106,6 +106,17 @@
     self.conversation.isRead ? [self markAsRead] : [self markAsUnread];
 }
 
+- (void)setContent:(NSString *)content andUnread:(NSInteger)count {
+    [self.detailLabel setText:content];
+    if (count > 0) {
+        if (count > 99) {
+            [self.unreadLabel setText:@"···"];
+        } else {
+            [self.unreadLabel setText:[NSString stringWithFormat:@"%ld",(long)count]];
+        }
+        [self markAsUnread];
+    }
+}
 
 /**
  *  标记为未读

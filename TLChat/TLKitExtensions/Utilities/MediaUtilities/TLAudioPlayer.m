@@ -38,6 +38,7 @@
     if (self.player && self.player.isPlaying) {
         [self stopPlayingAudio];
     }
+    
     self.completeBlock = complete;
     NSError *error;
     self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path] error:&error];
@@ -48,6 +49,7 @@
         }
         return;
     }
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     [self.player play];
 }
 

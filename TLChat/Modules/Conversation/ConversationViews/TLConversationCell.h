@@ -24,4 +24,6 @@
  */
 - (void)markAsRead;
 
+- (void)setContent:(NSString *)content andUnread:(NSInteger)count;
+
 @end

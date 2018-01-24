@@ -157,7 +157,7 @@
                 if (time_count == 2) {
                     [self addToShowMessage:message];
                 }
-                [self.recorderIndicatorView setVolume:volume];
+                [self.recorderIndicatorView setVolume:volume*2];
             } completeBlock:^(NSString *filePath, CGFloat time) {
                 if (time < 1.0) {
                     [self.recorderIndicatorView setStatus:TLRecorderStatusTooShort];

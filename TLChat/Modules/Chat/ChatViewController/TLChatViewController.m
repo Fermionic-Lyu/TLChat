@@ -70,12 +70,14 @@ static TLChatViewController *chatVC;
 {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [[UIDevice currentDevice] setProximityMonitoringEnabled:YES];
 //    [MobClick beginLogPageView:@"ChatVC"];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    [[UIDevice currentDevice] setProximityMonitoringEnabled:NO];
 //    [MobClick endLogPageView:@"ChatVC"];
 }
 

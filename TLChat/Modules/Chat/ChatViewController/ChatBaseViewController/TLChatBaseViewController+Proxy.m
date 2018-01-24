@@ -34,6 +34,13 @@
     else {
         [self.messageDisplayView updateMessage:message];
     }
+    if ([message isKindOfClass:[TLTextMessage class]]) {
+        [Answers logCustomEventWithName:@"Send Message" customAttributes:@{@"Type":@"Text"}];
+    } else if ([message isKindOfClass:[TLVoiceMessage class]]){
+        [Answers logCustomEventWithName:@"Send Message" customAttributes:@{@"Type":@"Voice"}];
+    } else if ([message isKindOfClass:[TLImageMessage class]]) {
+        [Answers logCustomEventWithName:@"Send Message" customAttributes:@{@"Type":@"Image"}];
+    }
     
     [[TLMessageManager sharedInstance] sendMessage:message progress:^(TLMessage * message, CGFloat pregress) {
         

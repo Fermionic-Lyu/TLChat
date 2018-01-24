@@ -12,6 +12,7 @@
 #import "TLMessageBaseCell.h"
 #import "TLChatEventStatistics.h"
 #import <Masonry/Masonry.h>
+#import <AVFoundation/AVFoundation.h>
 
 #define     PAGE_MESSAGE_COUNT      15
 
@@ -45,8 +46,14 @@
         [self.tableView addObserver:self forKeyPath:@"bounds" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMessageSendingFail:) name:@"MessageSendingFail" object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(proximityChanged:) name:UIDeviceProximityStateDidChangeNotification object:nil];
     }
     return self;
+}
+
+- (void)proximityChanged:(id)sender {
+    [[AVAudioSession sharedInstance] setCategory:[[UIDevice currentDevice] proximityState]? AVAudioSessionCategoryPlayAndRecord : AVAudioSessionCategoryPlayback error:nil];
 }
 
 - (void)dealloc

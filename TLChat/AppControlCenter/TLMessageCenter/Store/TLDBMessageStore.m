@@ -83,7 +83,7 @@
             if (imageMessage.imageData) {
                 
                 if ([imageMessage.imageData length] > 10 * 1024 * 1024) {
-                    CGSize newSize = CGSizeMake(1000, 1000 * imageMessage.imageSize.height / imageMessage.imageSize.width);
+                    CGSize newSize = CGSizeMake(1080, 1080 * imageMessage.imageSize.height / imageMessage.imageSize.width);
                     UIImage * newImage = [[UIImage imageWithData:imageMessage.imageData] scalingToSize:newSize];
                     imageMessage.imageData = UIImageJPEGRepresentation(newImage, 1.0);
                 }
@@ -92,7 +92,7 @@
                 msgObject[@"attachment"] = file;
                 
                 
-                CGSize thumbnailSize = CGSizeMake(100, 100 * imageMessage.imageSize.height / imageMessage.imageSize.width);
+                CGSize thumbnailSize = CGSizeMake(256, 256 * imageMessage.imageSize.height / imageMessage.imageSize.width);
                 UIImage * thumbnailImage = [[UIImage imageWithData:imageMessage.imageData] scalingToSize:thumbnailSize];
                 PFFile * thumbnail = [PFFile fileWithData:UIImageJPEGRepresentation(thumbnailImage, 0.5)];
                 msgObject[@"thumbnail"] = thumbnail;
@@ -129,8 +129,13 @@
                NSLog(@"send message fail %@", error.localizedDescription);
                
                dispatch_async(dispatch_get_main_queue(), ^{
-                   
-                   UIAlertController * ac = [UIAlertController alertControllerWithTitle:error.localizedDescription message:nil preferredStyle:UIAlertControllerStyleAlert];
+                   NSString *errorMessage;
+                   if (error.code == 100) {
+                       errorMessage = NSLocalizedString(@"SEND_MESSAGE_FAILED", nil);
+                   } else {
+                       errorMessage = error.localizedDescription;
+                   }
+                   UIAlertController * ac = [UIAlertController alertControllerWithTitle:errorMessage message:nil preferredStyle:UIAlertControllerStyleAlert];
                    [ac addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
                    
                    [[UIApplication sharedApplication].delegate.window.rootViewController presentViewController:ac animated:YES completion:nil];
