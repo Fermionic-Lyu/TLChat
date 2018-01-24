@@ -38,7 +38,7 @@
     if (self.player && self.player.isPlaying) {
         [self stopPlayingAudio];
     }
-    
+    [[UIDevice currentDevice] setProximityMonitoringEnabled:YES];
     self.completeBlock = complete;
     NSError *error;
     self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path] error:&error];
@@ -56,6 +56,7 @@
 - (void)stopPlayingAudio
 {
     [self.player stop];
+    [[UIDevice currentDevice] setProximityMonitoringEnabled:NO];
     if (self.completeBlock) {
         self.completeBlock(NO);
     }
