@@ -63,7 +63,10 @@
                     [cell setConversation:conversation];
                 }
             }
-            //[self.tableView reloadData];
+            if (needReloadData) {
+                [self.tableView reloadData];
+                needReloadData = NO;
+            }
             if ([self.tableView.mj_header isRefreshing]) {
                 [self.tableView.mj_header endRefreshing];
             }

@@ -50,6 +50,8 @@
     [[NSNotificationCenter defaultCenter] addObserverForName:kAKUserLoggedInNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
         [TLFriendHelper sharedFriendHelper]; // force a friend data load.
         [[HSNetworkAdapter adapter] fetchNotificationSettingForConversations];
+        needReloadData = YES;
+        [self updateConversationData];
     }];
     
     [[NSNotificationCenter defaultCenter] addObserverForName:kAKUserLoggedOutNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {

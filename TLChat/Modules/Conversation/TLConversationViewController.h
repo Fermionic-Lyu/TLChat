@@ -17,6 +17,7 @@
 
 @interface TLConversationViewController : UIViewController {
     NSArray * _currentKeys;
+    BOOL needReloadData;
 }
 
 @property (nonatomic, strong) TLFriendSearchViewController *searchVC;
