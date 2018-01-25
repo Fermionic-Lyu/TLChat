@@ -16,6 +16,8 @@
 - (void)startRecordingWithVolumeChangedBlock:(void (^)(CGFloat volume))volumeChanged
                                completeBlock:(void (^)(NSString *path, CGFloat time))complete
                                  cancelBlock:(void (^)())cancel;
+
+- (BOOL)isRecording;
 - (void)stopRecording;
 - (void)cancelRecording;
 

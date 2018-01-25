@@ -19,6 +19,7 @@
 #import "TLMessageManager+ConversationRecord.h"
 #import <Masonry/Masonry.h>
 #import "TLMacros.h"
+#import "TLAudioRecorder.h"
 
 @import Parse;
 @import ParseLiveQuery;
@@ -385,6 +386,9 @@
 {
     [super viewWillDisappear:animated];
     [[TLAudioPlayer sharedAudioPlayer] stopPlayingAudio];
+    if ([[TLAudioRecorder sharedRecorder] isRecording]) {
+        [[TLAudioRecorder sharedRecorder] cancelRecording];
+    }
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
 //    [[IQKeyboardManager sharedManager] setEnableAutoToolbar:YES];

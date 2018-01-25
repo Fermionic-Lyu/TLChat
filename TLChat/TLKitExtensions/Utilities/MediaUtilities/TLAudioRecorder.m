@@ -68,6 +68,10 @@
     } repeats:YES];
 }
 
+- (BOOL)isRecording {
+    return self.recorder.isRecording;
+}
+
 - (void)stopRecording
 {
     [self.timer invalidate];
