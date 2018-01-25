@@ -106,13 +106,18 @@
     self.conversation.isRead ? [self markAsRead] : [self markAsUnread];
 }
 
-- (void)setContent:(NSString *)content andUnread:(NSInteger)count andTime:(NSDate *)date {
-    [self.detailLabel setText:content];
-    [self.timeLabel setText:date.conversaionTimeInfo];
-    if (count > 99) {
+- (void)setConversationWithOutReloadingAvatar:(TLConversation *)conversation {
+    _conversation = conversation;
+    
+    [self.usernameLabel setText:conversation.partnerName];
+    [self.detailLabel setText:conversation.content];
+    [self.timeLabel setText:conversation.date.conversaionTimeInfo];
+    [self.remindImageView setHidden:YES];
+
+    if (conversation.unreadCount > 99) {
         [self.unreadLabel setText:@"···"];
     } else {
-        [self.unreadLabel setText:[NSString stringWithFormat:@"%ld",(long)count]];
+        [self.unreadLabel setText:[NSString stringWithFormat:@"%ld",(long)conversation.unreadCount]];
     }
     self.conversation.isRead ? [self markAsRead] : [self markAsUnread];
 }

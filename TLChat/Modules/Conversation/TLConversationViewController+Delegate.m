@@ -58,7 +58,7 @@
                 TLConversationCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
                 TLConversation *conversation = self.data[i];
                 if ([cell.conversation.partnerID isEqualToString:conversation.partnerID]) {
-                    [cell setContent:conversation.content andUnread:conversation.unreadCount andTime:conversation.date];
+                    [cell setConversationWithOutReloadingAvatar:conversation];
                 } else {
                     [cell setConversation:conversation];
                 }
