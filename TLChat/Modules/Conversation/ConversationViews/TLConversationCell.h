@@ -24,6 +24,6 @@
  */
 - (void)markAsRead;
 
-- (void)setContent:(NSString *)content andUnread:(NSInteger)count;
+- (void)setContent:(NSString *)content andUnread:(NSInteger)count andTime:(NSDate *)date;
 
 @end

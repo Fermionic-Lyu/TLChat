@@ -57,12 +57,11 @@
             for (int i = 0; i < [self.data count]; i++) {
                 TLConversationCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
                 TLConversation *conversation = self.data[i];
-//                if ([cell.conversation.partnerID isEqualToString:conversation.partnerID]) {
-//                    [cell setContent:conversation.content andUnread:conversation.unreadCount];
-//                } else {
-//                    [cell setConversation:conversation];
-//                }
-                [cell setConversation:conversation];
+                if ([cell.conversation.partnerID isEqualToString:conversation.partnerID]) {
+                    [cell setContent:conversation.content andUnread:conversation.unreadCount andTime:conversation.date];
+                } else {
+                    [cell setConversation:conversation];
+                }
             }
             //[self.tableView reloadData];
             if ([self.tableView.mj_header isRefreshing]) {
