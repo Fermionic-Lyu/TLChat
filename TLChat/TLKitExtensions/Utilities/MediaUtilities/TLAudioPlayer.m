@@ -74,6 +74,7 @@
 //MARK: AVAudioPlayerDelegate
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
 {
+    [[UIDevice currentDevice] setProximityMonitoringEnabled:NO];
     if (self.completeBlock) {
         self.completeBlock(YES);
         self.completeBlock = nil;

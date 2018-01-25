@@ -161,6 +161,7 @@
             } completeBlock:^(NSString *filePath, CGFloat time) {
                 if (time < 1.0) {
                     [self.recorderIndicatorView setStatus:TLRecorderStatusTooShort];
+                    [self.messageDisplayView deleteMessage:message];
                     return;
                 }
                 [self.recorderIndicatorView removeFromSuperview];
