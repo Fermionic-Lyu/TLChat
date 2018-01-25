@@ -67,9 +67,6 @@
                 [self.tableView reloadData];
                 needReloadData = NO;
             }
-            if ([self.tableView.mj_header isRefreshing]) {
-                [self.tableView.mj_header endRefreshing];
-            }
         });
         
         DLog(@"calculated totle unread count: %ld", totalUnreadCount);

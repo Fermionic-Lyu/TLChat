@@ -219,6 +219,9 @@
         for (TLConversation *conversation in data) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"NewChatMessageReceived" object:conversation.key];
         }
+        if ([self.tableView.mj_header isRefreshing]) {
+            [self.tableView.mj_header endRefreshing];
+        }
         
     }];
 }
