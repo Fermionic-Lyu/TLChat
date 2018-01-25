@@ -58,9 +58,10 @@
     __weak typeof(self) weakSelf = self;
     self.timer = [NSTimer scheduledTimerWithTimeInterval:0.5 block:^(NSTimer *timer) {
         [weakSelf.recorder updateMeters];
-        const double ALPHA = 0.05;
-        float peakPower = pow(10, (0.05 * [weakSelf.recorder peakPowerForChannel:0]));
-        _audioMonitorResults = ALPHA * peakPower + (1.0 - ALPHA) * _audioMonitorResults;
+        _audioMonitorResults = pow(10, (0.025 * [weakSelf.recorder peakPowerForChannel:0]));
+        if (_audioMonitorResults > 1.0f) {
+            _audioMonitorResults = 1.0f;
+        }
         if (weakSelf && weakSelf.volumeChangedBlock) {
             weakSelf.volumeChangedBlock(_audioMonitorResults);
         }
