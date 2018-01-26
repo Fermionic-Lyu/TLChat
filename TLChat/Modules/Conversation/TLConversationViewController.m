@@ -25,9 +25,7 @@
 
 @property (nonatomic, strong) UIImageView *scrollTopView;
 
-@property (nonatomic, strong) TLSearchController *searchController;
-
-@property (nonatomic, strong) TLAddMenuView *addMenuView;
+@property (nonatomic, strong) UIView *headerView;
 
 @end
 
@@ -67,7 +65,6 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newConversation:) name:@"UNI_FRIEND_LIST_CHANGED_NOTIFICATION" object:nil];
     
-    //self.definesPresentationContext = YES;
 }
 
 - (void)newConversation:(NSNotification *)notification {
@@ -132,6 +129,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
     //[self.navigationController setNavigationBarHidden:YES animated:YES];
     
     [self updateConversationData];  // to update conversation lastes message whenver back to this screen
@@ -141,22 +139,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    if (self.addMenuView.isShow) {
-        [self.addMenuView dismiss];
-    }
-    
-
-}
-
-#pragma mark - Event Response
-- (void)rightBarButtonDown:(UIBarButtonItem *)sender
-{
-    if (self.addMenuView.isShow) {
-        [self.addMenuView dismiss];
-    }
-    else {
-        [self.addMenuView showInView:self.navigationController.view];
-    }
+    [self.navigationController setNavigationBarHidden:NO animated:NO];
 }
 
 // 网络情况改变
@@ -180,6 +163,7 @@
 #pragma mark - Private Methods -
 - (void)p_initUI
 {
+    [self.view addSubview:self.headerView];
     [self.view addSubview:self.tableView];
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationController.view setBackgroundColor:[UIColor whiteColor]];
@@ -191,12 +175,27 @@
     } else {
         // Fallback on earlier versions
     }
-    self.title = NSLocalizedString(@"MESSAGE", nil);
+}
+
+- (UIView *)headerView {
+    if (!_headerView) {
+        _headerView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 20.0f, self.view.frame.size.width, 96.0f)];
+        [_headerView setBackgroundColor:[UIColor whiteColor]];
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20.0f, 42.0f, 200.0f, 44.0f)];
+        [titleLabel setText:NSLocalizedString(@"MESSAGE", nil)];
+        [titleLabel setTextColor:[UIColor blackColor]];
+        [titleLabel setFont:[UIFont fontWithName:@"Helvetica-Bold" size:30.0f]];
+        [_headerView addSubview:titleLabel];
+        UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 95.0f, self.view.frame.size.width, 1.0f)];
+        [line setBackgroundColor:[UIColor colorWithHexString:@"EFEFF4"]];
+        [_headerView addSubview:line];
+    }
+    return _headerView;
 }
 
 - (UITableView *)tableView {
     if (!_tableView) {
-        _tableView = [[HSTableView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, SAFEAREA_INSETS.bottom > 0 ? self.view.frame.size.height - SAFEAREA_INSETS.bottom - 137.0f : self.view.frame.size.height - 113.0f)];
+        _tableView = [[HSTableView alloc] initWithFrame:CGRectMake(0.0f, 116.0f, self.view.frame.size.width, self.view.frame.size.height - 165.0f - (SAFEAREA_INSETS.bottom > 0 ? 34.0f : 0.0f))];
         [self registerCellClass];
         [_tableView setBackgroundColor:[UIColor whiteColor]];
         [_tableView setDelegate:self];
@@ -226,44 +225,12 @@
     }];
 }
 
-#pragma mark - Getter -
-- (TLSearchController *) searchController
-{
-    if (_searchController == nil) {
-        _searchController = [[TLSearchController alloc] initWithSearchResultsController:self.searchVC];
-        [_searchController setSearchResultsUpdater:self.searchVC];
-        [_searchController.searchBar setPlaceholder:@"搜索"];
-        [_searchController.searchBar setDelegate:self];
-        [_searchController setShowVoiceButton:YES];
-        _searchController.hidesNavigationBarDuringPresentation = NO;
-    }
-    return _searchController;
-}
-
-- (TLFriendSearchViewController *) searchVC
-{
-    if (_searchVC == nil) {
-        _searchVC = [[TLFriendSearchViewController alloc] init];
-    }
-    return _searchVC;
-}
-
 - (UIImageView *)scrollTopView
 {
     if (_scrollTopView == nil) {
         _scrollTopView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"nav_menu_radar"]];
     }
     return _scrollTopView;
-}
-
-- (TLAddMenuView *)addMenuView
-{
-    if (_addMenuView == nil) {
-        _addMenuView = [[TLAddMenuView alloc] init];
-        [_addMenuView setDelegate:self];
-    }
-    return _addMenuView;
-    //return nil;
 }
 
 @end
