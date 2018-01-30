@@ -45,9 +45,6 @@ static TLUIManager *uiManager = nil;
 
 - (void)openChatDialog:(NSString *)dialogKey navigationController:(UINavigationController*)navigationController {
     
-    
-    [[TLMessageManager sharedInstance].conversationStore updateLastReadDateForConversationByUid:[TLUserHelper sharedHelper].userID key:dialogKey];
-    
     TLChatViewController * chatVC = [navigationController findViewController:@"TLChatViewController"];
     if (chatVC) {
         if ([dialogKey isEqualToString:chatVC.conversationKey]) {
