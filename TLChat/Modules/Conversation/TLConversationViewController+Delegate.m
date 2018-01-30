@@ -194,21 +194,6 @@
     [alert show];
 }
 
-//MARK: TLAddMenuViewDelegate
-// 选中了addMenu的某个菜单项
-- (void)addMenuView:(TLAddMenuView *)addMenuView didSelectedItem:(TLAddMenuItem *)item
-{
-    if (item.className.length > 0) {
-        id vc = [[NSClassFromString(item.className) alloc] init];
-        [self setHidesBottomBarWhenPushed:YES];
-        [self.navigationController pushViewController:vc animated:YES];
-        [self setHidesBottomBarWhenPushed:NO];
-    }
-    else {
-        [TLUIUtility showAlertWithTitle:item.title message:@"功能暂未实现"];
-    }
-}
-
 - (void)p_initLiveQuery
 {
     NSArray * keys = [self.data valueForKeyPath:@"key"];

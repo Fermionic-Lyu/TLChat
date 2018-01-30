@@ -47,8 +47,8 @@
 }
 
 - (void)setMessage:(TLMessage *)message
-{
-    message.showName = message.partnerType == TLPartnerTypeGroup && message.ownerTyper != TLMessageOwnerTypeSelf;
+{    
+    message.showName = message.partnerType == TLPartnerTypeGroup && message.ownerTyper != TLMessageOwnerTypeSelf && message.ownerTyper != TLMessageOwnerTypeSystem;
     
     if (_message && [_message.messageID isEqualToString:message.messageID]) {
         return;
@@ -155,10 +155,6 @@
         make.top.mas_equalTo(self.usernameLabel.mas_bottom).mas_offset(-MSGBG_SPACE_Y);
     }];
     
-//    [self.failureView mas_remakeConstraints:^(MASConstraintMaker *make) {
-//        make.centerY.mas_equalTo(self.messageBackgroundView.mas_centerY);
-//        make.right.mas_equalTo(self.messageBackgroundView.mas_left).mas_offset(-5.0f);
-//    }];
 }
 
 #pragma mark - Event Response -

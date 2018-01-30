@@ -354,6 +354,7 @@
         DLog(@"conversation.lastReadDate: %@", conversation.lastReadDate);
         [query whereKey:@"createdAt" greaterThan:conversation.lastReadDate];
         [query whereKey:@"sender" notEqualTo:[TLUserHelper sharedHelper].userID];
+        [query whereKey:@"sender" notEqualTo:@"ADMIN"];
         [query countObjectsInBackgroundWithBlock:^(int number, NSError * _Nullable error) {
            
                 
@@ -372,13 +373,15 @@
         [dialogQuery whereKey:@"user" equalTo:[PFUser currentUser]];
         [dialogQuery whereKey:@"key" equalTo:key];
         [dialogQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-            
+            NSDate *laterDate;
             if (object && object[@"localDeletedAt"]) {
-                [query whereKey:@"createdAt" equalTo:object[@"localDeletedAt"]];
+                laterDate = object[@"localDeletedAt"];
             }
-            if (object[@"lastReadDate"]) {
-                [query whereKey:@"createdAt" greaterThan:object[@"lastReadDate"]];
+            if (object[@"lastReadDate"] && [object[@"lastReadDate"] isLaterThanDate:laterDate]) {
+                laterDate = object[@"lastReadDate"];
             }
+            [query whereKey:@"createdAt" greaterThan:laterDate];
+            [query whereKey:@"sender" notEqualTo:@"ADMIN"];
             [query countObjectsInBackgroundWithBlock:^(int number, NSError * _Nullable error) {
                     [self setUnreadNumberForConversationByUid:[TLUserHelper sharedHelper].userID key:key newUnreadCount:number];
                     

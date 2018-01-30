@@ -254,8 +254,19 @@
 - (void)processMessageFromServer:(PFObject *)message bypassMine:(BOOL)bypassMine{
     
     DLog(@"message received: %@ %@ %@", message.objectId, message[@"message"], message[@"sender"]);
-    
     NSDictionary * dict = [message[@"message"] mj_JSONObject];
+    
+    if ([message[@"sender"] isEqualToString:@"ADMIN"]) {
+        TLTextMessage *message1 = [[TLTextMessage alloc] init];
+        message1.ownerTyper = TLMessageOwnerTypeSystem;
+        message1.text = dict[@"text"];
+        message1.messageID = message.objectId;
+        message1.date = message.createdAt;
+        message1.SavedOnServer = YES;
+        message1.userID = [TLUserHelper sharedHelper].userID;
+        [self receivedMessage:message1];
+        return;
+    }
     
     if (dict ) {
         if (dict[@"text"]) {

@@ -53,10 +53,13 @@ static UILabel *textLabel = nil;
 {
     if (kMessageFrame == nil) {
         kMessageFrame = [[TLMessageFrame alloc] init];
-        kMessageFrame.height = 20 + (self.showTime ? 30 : 0) + (self.showName ? 15 : 0) + 20;
+        kMessageFrame.height = 20 + (self.showTime ? 35 : 0) + (self.showName ? 15 : 0) + 20;
         [textLabel setAttributedText:self.attrText];
         kMessageFrame.contentSize = [textLabel sizeThatFits:CGSizeMake(MAX_MESSAGE_WIDTH, MAXFLOAT)];
         kMessageFrame.height += kMessageFrame.contentSize.height;
+        if (self.ownerTyper == TLMessageOwnerTypeSystem) {
+            kMessageFrame.height = 55.0f;
+        }
     }
     return kMessageFrame;
 }

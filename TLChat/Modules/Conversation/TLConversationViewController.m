@@ -153,7 +153,7 @@
             [self.navigationItem setTitle:NSLocalizedString(@"MESSAGE", nil)];
             break;
         case AFNetworkReachabilityStatusNotReachable:
-            [self.navigationItem setTitle:NSLocalizedString(@"MESSAGE_UNCONNECTED", nil)];
+            [self.navigationItem setTitle:NSLocalizedString(@"MESSAGE_DISCONNECTED", nil)];
             break;
         default:
             break;

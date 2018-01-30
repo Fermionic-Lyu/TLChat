@@ -33,11 +33,29 @@
 
 - (void)setMessage:(TLTextMessage *)message
 {
+    if (message.ownerTyper == TLMessageOwnerTypeSystem) {
+        [self.timeLabel setText:message.text];
+        [self.messageLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.height.mas_equalTo(0);
+        }];
+        [self.avatarButton mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.height.mas_equalTo(0);
+        }];
+        [self.usernameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.height.mas_equalTo(0);
+        }];
+        [self.messageBackgroundView mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.height.mas_equalTo(0);
+        }];
+        return;
+    }
+    
     if (self.message && [self.message.messageID isEqualToString:message.messageID]) {
         return;
     }
 
     [super setMessage:message];
+    
     [self.messageLabel setAttributedText:[message attrText]];
     
     [self.messageLabel setContentCompressionResistancePriority:500 forAxis:UILayoutConstraintAxisHorizontal];
