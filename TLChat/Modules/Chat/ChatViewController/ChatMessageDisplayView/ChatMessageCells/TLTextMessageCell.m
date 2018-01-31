@@ -33,8 +33,17 @@
 
 - (void)setMessage:(TLTextMessage *)message
 {
+
+//    if (self.message && [self.message.messageID isEqualToString:message.messageID]) {
+//        return;
+//    }
+    
     if (message.ownerTyper == TLMessageOwnerTypeSystem) {
         [self.timeLabel setText:message.text];
+        [self.timeLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.height.mas_equalTo(20.0f);
+            make.top.mas_equalTo(self.contentView).mas_offset(15.0f);
+        }];
         [self.messageLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.height.mas_equalTo(0);
         }];
@@ -47,10 +56,6 @@
         [self.messageBackgroundView mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.height.mas_equalTo(0);
         }];
-        return;
-    }
-    
-    if (self.message && [self.message.messageID isEqualToString:message.messageID]) {
         return;
     }
 

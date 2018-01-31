@@ -18,6 +18,7 @@
     message.userID = [TLUserHelper sharedHelper].userID;
     message.fromUser = (id<TLChatUserProtocol>)[TLUserHelper sharedHelper].user;
     message.date = [NSDate date];
+    message.showName = NO;
     
     if ([self.partner chat_userType] == TLChatUserTypeUser) {
         message.partnerType = TLPartnerTypeUser;
@@ -46,10 +47,6 @@
         
     } success:^(TLMessage * message) {
         NSLog(@"send success");
-        
-
-        
-        
     } failure:^(TLMessage * message) {
         NSLog(@"send failure");
     }];
@@ -67,6 +64,7 @@
         message.partnerType = TLPartnerTypeGroup;
         message.groupID = [self.partner chat_userID];
     }
+    message.showName = message.partnerType == TLPartnerTypeGroup && message.ownerTyper != TLMessageOwnerTypeSelf && message.ownerTyper != TLMessageOwnerTypeSystem;
 
     [self addToShowMessage:message];    // 添加到列表
  

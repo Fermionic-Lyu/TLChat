@@ -48,11 +48,10 @@
 
 - (void)setMessage:(TLMessage *)message
 {    
-    message.showName = message.partnerType == TLPartnerTypeGroup && message.ownerTyper != TLMessageOwnerTypeSelf && message.ownerTyper != TLMessageOwnerTypeSystem;
     
-    if (_message && [_message.messageID isEqualToString:message.messageID]) {
-        return;
-    }
+//    if (_message && [_message.messageID isEqualToString:message.messageID]) {
+//        return;
+//    }
     [self.timeLabel setText:[NSString stringWithFormat:@"  %@  ", message.date.chatTimeInfo]];
     [self.usernameLabel setText:[message.fromUser chat_username]];
     if ([message.fromUser chat_avatarPath].length > 0) {
@@ -67,14 +66,14 @@
     }
     
     // 时间
-    if (!_message || _message.showTime != message.showTime) {
+//    if (!_message || _message.showTime != message.showTime) {
         [self.timeLabel mas_updateConstraints:^(MASConstraintMaker *make) {
             make.height.mas_equalTo(message.showTime ? TIMELABEL_HEIGHT : 0);
             make.top.mas_equalTo(self.contentView).mas_offset(message.showTime ? TIMELABEL_SPACE_Y : 0);
         }];
-    }
+//    }
     
-    if (!message || _message.ownerTyper != message.ownerTyper) {
+//    if (!message || _message.ownerTyper != message.ownerTyper) {
         // 头像
         [self.avatarButton mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.width.and.height.mas_equalTo(AVATAR_WIDTH);
@@ -110,7 +109,7 @@
             make.centerY.mas_equalTo(self.messageBackgroundView.mas_centerY);
             make.size.width.and.height.mas_equalTo(25.0f);
         }];
-    }
+//    }
     
     [self.failureView setHidden:message.sendState != TLMessageSendFail];
     [self.usernameLabel setHidden:!message.showName];
