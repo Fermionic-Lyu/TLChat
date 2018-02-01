@@ -60,7 +60,7 @@
         
     }
     else if ([message.fromUser chat_avatarURL].length > 0) {
-        [self.avatarButton tt_setImageWithURL:TLURL([message.fromUser chat_avatarURL]) forState:UIControlStateNormal];
+        [self.avatarButton tt_setImageWithURL:TLURL([message.fromUser chat_avatarURL]) forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"default_avatar"]];
     }else {
         [self.avatarButton setImage:[UIImage imageNamed:DEFAULT_AVATAR_PATH] forState:UIControlStateNormal];
     }
