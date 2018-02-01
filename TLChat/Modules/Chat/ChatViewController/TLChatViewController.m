@@ -110,23 +110,6 @@ static TLChatViewController *chatVC;
     [self setNotifiButtonImage];
 }
 
-#pragma mark - # Event Response
-- (void)rightBarButtonDown:(UINavigationBar *)sender
-{
-    if ([self.partner chat_userType] == TLChatUserTypeUser) {
-        TLChatDetailViewController *chatDetailVC = [[TLChatDetailViewController alloc] init];
-        [chatDetailVC setUser:(TLUser *)self.partner];
-        [self setHidesBottomBarWhenPushed:YES];
-        [self.navigationController pushViewController:chatDetailVC animated:YES];
-    }
-    else if ([self.partner chat_userType] == TLChatUserTypeGroup) {
-        TLChatGroupDetailViewController *chatGroupDetailVC = [[TLChatGroupDetailViewController alloc] init];
-        [chatGroupDetailVC setGroup:(TLGroup *)self.partner];
-        [self setHidesBottomBarWhenPushed:YES];
-        [self.navigationController pushViewController:chatGroupDetailVC animated:YES];
-    }
-}
-
 - (void)notifiButtonDown:(id)sender {
     self.noDisturb = !self.noDisturb;
     [[TLMessageManager sharedInstance].conversationStore updateNoDisturbForConversation:self.noDisturb Uid:[self.user chat_userID] key:self.conversationKey];
@@ -139,6 +122,7 @@ static TLChatViewController *chatVC;
 }
 
 - (void)groupInfoButtonDown:(id)sender {
+
     HSCourseStudentListVC *nextVC = [[HSCourseStudentListVC alloc] initWithCourse:_courseInfo];
     [self.navigationController pushViewController:nextVC animated:YES hideBottomTabBar:YES];
 }

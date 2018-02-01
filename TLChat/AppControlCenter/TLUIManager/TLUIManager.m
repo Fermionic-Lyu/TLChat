@@ -70,7 +70,7 @@ static TLUIManager *uiManager = nil;
     } else {
         
         TLGroup * group = [[TLFriendHelper sharedFriendHelper] getGroupInfoByGroupID:dialogKey];
-        vc.courseInfo = [[TLFriendHelper sharedFriendHelper] getCourseInfoByGroupID:group.groupID];
+        vc.courseInfo = [[TLGroupDataLoader sharedGroupDataLoader] getCourseInfoByGroupID:group.groupID];;
         [vc setPartner:(id<TLChatUserProtocol>)group];
         [navigationController pushViewController:vc animated:YES];
         [[TLGroupDataLoader sharedGroupDataLoader] createCourseDialogWithLatestMessage:group completionBlock:nil];

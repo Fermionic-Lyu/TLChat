@@ -15,6 +15,7 @@
 #import "TLMessageManager.h"
 #import <TLKit/TLKit.h>
 #import "TLMacros.h"
+#import "TLGroupDataLoader.h"
 
 
 @interface TLConversationViewController (Delegate)
@@ -128,7 +129,7 @@
             return;
         }
         [chatVC setPartner:group];
-        chatVC.courseInfo = [[TLFriendHelper sharedFriendHelper] getCourseInfoByGroupID:conversation.partnerID];
+        chatVC.courseInfo = [[TLGroupDataLoader sharedGroupDataLoader] getCourseInfoByGroupID:group.groupID];
     }
     [self setHidesBottomBarWhenPushed:YES];
     [self.navigationController pushViewController:chatVC animated:YES];
@@ -159,70 +160,6 @@
                                            }
                                        }];
     return @[delAction];
-}
-
-
-- (void)processMessageFromServer:(PFObject *)message bypassMine:(BOOL)bypassMine{
-    
-    DLog(@"message received: %@ %@ %@", message.objectId, message[@"message"], message[@"sender"]);
-    
-
-    NSArray * matches = [self.data filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"key == %@", message[@"dialogKey"]]];
-    if (matches.count > 0) {
-        TLConversation * conv = matches.firstObject;
-        
-//        NSInteger idx = [self.data indexOfObject:conv];
-//
-//        NSIndexPath * indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
-//
-//
-        NSString * content = [TLMessage conversationContentForMessage:message[@"message"]];
-
-        NSString * lastMsg = [[TLFriendHelper sharedFriendHelper] formatLastMessage:[TLMessage conversationContentForMessage:  message[@"message"]] fid:message[@"sender"]];
-//
-//
-        conv.content = conv.convType == TLConversationTypeGroup ? lastMsg : content;
-//
-//        conv.unreadCount = conv.unreadCount + 1;
-//
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//             [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//        });
-        
-     
-        [[TLMessageManager sharedInstance].conversationStore addConversationByUid:[TLUserHelper sharedHelper].userID
-                                                                              fid:conv.partnerID
-                                                                             type:conv.convType
-                                                                             date:message.createdAt
-                                                                     last_message:conv.content
-         
-                                                     noDisturb:conv.noDisturb
-                                                                        localOnly:YES];
-        
-        [[TLMessageManager sharedInstance].conversationStore increaseUnreadNumberForConversationByUid:[TLUserHelper sharedHelper].userID key:conv.key] ;
-       
-        [self updateConversationData];
-        
-//        [[TLMessageManager sharedInstance] refreshConversationRecord];
-//
-//        [[TLMessageManager sharedInstance] conversationRecord:^(NSArray *data) {
-//
-//            self.data = [[NSMutableArray alloc] initWithArray:data];
-//
-//            NSInteger totalUnreadCount = 0;
-//            for (TLConversation *conversation in data) {
-//
-//
-//                totalUnreadCount = totalUnreadCount + conversation.unreadCount;
-//            }
-//
-//
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateTabbarBadgeValueNotifi"
-//                                                                object:@{@"unreadMessagesCount":[NSNumber numberWithInteger:totalUnreadCount]}];
-//
-//        }];
-    }
-    
 }
 
 @end

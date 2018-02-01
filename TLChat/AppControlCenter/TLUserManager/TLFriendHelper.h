@@ -56,8 +56,6 @@
 
 - (TLGroup *)getGroupInfoByGroupID:(NSString *)groupID;
 
-- (HSCourseInfo *)getCourseInfoByGroupID:(NSString *)groupID;
-
 - (NSString *)makeDialogNameForFriend:(NSString *)fid myId:(NSString *)uid;
 
 - (NSString *)formatLastMessage:(NSString *)content fid:(NSString *)fid;

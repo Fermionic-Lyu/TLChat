@@ -77,7 +77,6 @@
 - (void)refreshAllConversations {
     WS(weakSelf);
     dispatch_group_t serviceGroup = dispatch_group_create();
-    
     [[TLMessageManager sharedInstance] conversationRecord:^(NSArray *data) {
         for (int i = 0; i < [data count]; i++) {
             TLConversation *conversation = data[i];

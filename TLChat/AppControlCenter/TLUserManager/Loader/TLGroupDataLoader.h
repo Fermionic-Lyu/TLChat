@@ -24,6 +24,8 @@
 
 - (void)resetCourses;
 
+- (HSCourseInfo *)getCourseInfoByGroupID:(NSString *)groupID;
+
 - (NSInteger)getCourseColorWithCourseId:(NSString *)courseId;
 
 - (void)recreateLocalDialogsForGroupsWithCompletionBlock:(void(^)(void))completionBlcok;

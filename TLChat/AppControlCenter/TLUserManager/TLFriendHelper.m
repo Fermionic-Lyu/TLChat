@@ -221,21 +221,6 @@ static TLFriendHelper *friendHelper = nil;
     return nil;
 }
 
-- (HSCourseInfo *)getCourseInfoByGroupID:(NSString *)groupID {
-    
-    if (groupID == nil) {
-        return nil;
-    }
-    NSArray *comp = [groupID componentsSeparatedByString:@"-"];
-    NSString *groupName = [[comp subarrayWithRange:NSMakeRange(0, [comp count]-2)] componentsJoinedByString:@" "];
-    for (PFObject *course in [TLGroupDataLoader sharedGroupDataLoader].courses) {
-        if ([course[@"summary"] isEqualToString:groupName]) {
-            return [[HSCourseInfo alloc] initWithParseObject:course];
-        }
-    }
-    return nil;
-}
-
 #pragma mark - Private Methods -
 - (void)p_resetFriendData
 {

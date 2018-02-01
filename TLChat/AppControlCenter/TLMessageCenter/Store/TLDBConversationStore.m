@@ -379,11 +379,10 @@
     if (conversation.lastReadDate && ![conversation.lastReadDate isEqualToDate:[NSDate dateWithTimeIntervalSince1970:0]]) {
         DLog(@"conversation.lastReadDate: %@", conversation.lastReadDate);
         [query whereKey:@"createdAt" greaterThan:conversation.lastReadDate];
-        [query whereKey:@"sender" notEqualTo:[TLUserHelper sharedHelper].userID];
-        [query whereKey:@"sender" notEqualTo:@"ADMIN"];
+        [query whereKey:@"sender" notContainedIn:@[[TLUserHelper sharedHelper].userID, @"ADMIN"]];
         [query countObjectsInBackgroundWithBlock:^(int number, NSError * _Nullable error) {
            
-                
+            
             [self setUnreadNumberForConversationByUid:[TLUserHelper sharedHelper].userID key:key newUnreadCount:number];
             
             
@@ -414,7 +413,7 @@
             if (laterDate) {
                 [query whereKey:@"createdAt" greaterThan:laterDate];
             }
-            [query whereKey:@"sender" notEqualTo:@"ADMIN"];
+            [query whereKey:@"sender" notContainedIn:@[[TLUserHelper sharedHelper].userID, @"ADMIN"]];
             [query countObjectsInBackgroundWithBlock:^(int number, NSError * _Nullable error) {
                     [self setUnreadNumberForConversationByUid:[TLUserHelper sharedHelper].userID key:key newUnreadCount:number];
                     
