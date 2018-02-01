@@ -20,13 +20,7 @@
     BOOL needReloadData;
 }
 
-@property (nonatomic, strong) TLFriendSearchViewController *searchVC;
-
 @property (nonatomic, strong) NSMutableArray *data;
 @property (nonatomic, strong) HSTableView *tableView;
-
-@property (nonatomic, strong) PFLiveQueryClient *client;
-@property (nonatomic, strong) PFQuery *query;
-@property (nonatomic, strong) PFLiveQuerySubscription *subscription; // must use property to hold reference.
 
 @end

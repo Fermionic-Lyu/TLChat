@@ -12,7 +12,7 @@
 
 #define     HEIGHT_CONVERSATION_CELL        80.0f
 
-@interface TLConversationViewController (Delegate) <TLMessageManagerConvVCDelegate, UISearchBarDelegate, TLAddMenuViewDelegate> {
+@interface TLConversationViewController (Delegate) <TLMessageManagerConvVCDelegate> {
     
 }
 

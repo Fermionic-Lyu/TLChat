@@ -35,6 +35,7 @@
 #define     SQL_UPDATE_CONV             @"UPDATE %@ SET unread_count = %ld WHERE uid = '%@' AND key = '%@'"
 #define     SQL_UPDATE_CONV_LAST_READ_DATE     @"UPDATE %@ SET last_read_date = '%@' WHERE uid = '%@' AND key = '%@'"
 
+#define SQL_UPDATE_CONV_NO_DISTURB @"UPDATE %@ SET ext1 = '%@' WHERE uid = '%@' AND key = '%@'"
 
 #define     SQL_SELECT_CONV_BY_KEY      @"SELECT * FROM %@ WHERE key = '%@' and uid = '%@'"
 

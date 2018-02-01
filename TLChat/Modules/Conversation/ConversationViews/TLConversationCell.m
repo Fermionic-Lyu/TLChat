@@ -78,27 +78,10 @@
     [self.usernameLabel setText:conversation.partnerName];
     [self.detailLabel setText:conversation.content];
     [self.timeLabel setText:conversation.date.conversaionTimeInfo];
-    [self.remindImageView setHidden:YES];
-//    switch (conversation.remindType) {
-//        case TLMessageRemindTypeNormal:
-//            [self.remindImageView setHidden:YES];
-//            break;
-//        case TLMessageRemindTypeClosed:
-//            [self.remindImageView setHidden:NO];
-//            [self.remindImageView setImage:[UIImage imageNamed:@"conv_remind_close"]];
-//            break;
-//        case TLMessageRemindTypeNotLook:
-//            [self.remindImageView setHidden:NO];
-//            [self.remindImageView setImage:[UIImage imageNamed:@"conv_remind_notlock"]];
-//            break;
-//        case TLMessageRemindTypeUnlike:
-//            [self.remindImageView setHidden:NO];
-//            [self.remindImageView setImage:[UIImage imageNamed:@"conv_remind_unlike"]];
-//            break;
-//        default:
-//            break;
-//    }
-    if (conversation.unreadCount > 99) {
+    [self.remindImageView setHidden:!conversation.noDisturb];
+
+
+    if (conversation.unreadCount > 99 || conversation.noDisturb) {
         [self.unreadLabel setText:@"···"];
     } else {
         [self.unreadLabel setText:[NSString stringWithFormat:@"%ld",(long)conversation.unreadCount]];
@@ -112,13 +95,14 @@
     [self.usernameLabel setText:conversation.partnerName];
     [self.detailLabel setText:conversation.content];
     [self.timeLabel setText:conversation.date.conversaionTimeInfo];
-    [self.remindImageView setHidden:YES];
+    [self.remindImageView setHidden:!conversation.noDisturb];
 
-    if (conversation.unreadCount > 99) {
+    if (conversation.unreadCount > 99 || conversation.noDisturb) {
         [self.unreadLabel setText:@"···"];
     } else {
         [self.unreadLabel setText:[NSString stringWithFormat:@"%ld",(long)conversation.unreadCount]];
     }
+
     self.conversation.isRead ? [self markAsRead] : [self markAsUnread];
 }
 
@@ -169,44 +153,18 @@
 #pragma mark - Private Methods -
 - (void)p_addMasonry
 {
-//    [self.avatarImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.mas_equalTo(CONV_SPACE_X);
-//        make.top.mas_equalTo(CONV_SPACE_Y);
-//        make.bottom.mas_equalTo(- CONV_SPACE_Y);
-//        make.width.mas_equalTo(self.avatarImageView.mas_height);
-//    }];
-    
-//    [self.usernameLabel setContentCompressionResistancePriority:100 forAxis:UILayoutConstraintAxisHorizontal];
-//    [self.usernameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.mas_equalTo(self.avatarImageView.mas_right).mas_offset(CONV_SPACE_X);
-//        make.top.mas_equalTo(self.avatarImageView).mas_offset(2.0);
-//        make.right.mas_lessThanOrEqualTo(self.timeLabel.mas_left).mas_offset(-5);
-//    }];
-    
-//    [self.detailLabel setContentCompressionResistancePriority:110 forAxis:UILayoutConstraintAxisHorizontal];
-//    [self.detailLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.bottom.mas_equalTo(self.avatarImageView).mas_offset(-2.0);
-//        make.left.mas_equalTo(self.usernameLabel);
-//        make.right.mas_lessThanOrEqualTo(self.remindImageView.mas_left);
-//    }];
-    
+
     [self.timeLabel setContentCompressionResistancePriority:300 forAxis:UILayoutConstraintAxisHorizontal];
     [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.usernameLabel);
         make.right.mas_equalTo(self.contentView).mas_offset(-CONV_SPACE_X);
     }];
     
-    [self.remindImageView setContentCompressionResistancePriority:310 forAxis:UILayoutConstraintAxisHorizontal];
     [self.remindImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.mas_equalTo(self.timeLabel);
-        make.centerY.mas_equalTo(self.detailLabel);
+        make.right.mas_equalTo(self.timeLabel.mas_left);//.mas_offset(-5.0f);
+        make.centerY.mas_equalTo(self.timeLabel);
     }];
-    
-//    [self.redPointView mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.left.mas_equalTo(self.usernameLabel.mas_right).mas_offset(3);
-//        make.top.mas_equalTo(self.avatarImageView.top).mas_offset(-4);
-//        make.width.and.height.mas_equalTo(REDPOINT_WIDTH);
-//    }];
+
 }
 
 #pragma mark - Getter
@@ -265,7 +223,8 @@
 {
     if (_remindImageView == nil) {
         _remindImageView = [[UIImageView alloc] init];
-        [_remindImageView setAlpha:0.4];
+        [_remindImageView setImage:[UIImage imageNamed:@"conv_remind_close"]];
+//        [_remindImageView setAlpha:0.4];
     }
     return _remindImageView;
 }

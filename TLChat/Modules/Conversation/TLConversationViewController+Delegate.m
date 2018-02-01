@@ -17,7 +17,7 @@
 #import "TLMacros.h"
 
 
-@interface TLConversationViewController (Delegate) <PFLiveQuerySubscriptionHandling>
+@interface TLConversationViewController (Delegate)
 
 @end
 @implementation TLConversationViewController (Delegate)
@@ -32,7 +32,6 @@
 //MARK: TLMessageManagerConvVCDelegate
 - (void)updateConversationData
 {
-    [[HSNetworkAdapter adapter] fetchNotificationSettingForConversations];
     [[TLMessageManager sharedInstance] refreshConversationRecord];
     
     [[TLMessageManager sharedInstance] conversationRecord:^(NSArray *data) {
@@ -47,13 +46,16 @@
                 TLGroup *group = [[TLFriendHelper sharedFriendHelper] getGroupInfoByGroupID:conversation.partnerID];
                 [conversation updateGroupInfo:group];
             }
-            conversation.noDisturb = [[HSNetworkAdapter adapter] getNotificationSettingForConversation:conversation.key];
             
-            totalUnreadCount = totalUnreadCount + conversation.unreadCount;
+            totalUnreadCount = totalUnreadCount + (conversation.noDisturb ? 0 : conversation.unreadCount);
         }
         self.data = [[NSMutableArray alloc] initWithArray:data];
         
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSInteger numberRows = [self.tableView numberOfRowsInSection:0];
+            if (numberRows < [self.data count]) {
+                needReloadData = YES;
+            }
             for (int i = 0; i < [self.data count]; i++) {
                 TLConversationCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
                 TLConversation *conversation = self.data[i];
@@ -75,7 +77,6 @@
 
     }];
     
-    [self p_initLiveQuery];
 }
 
 //MARK: UITableViewDataSource
@@ -90,7 +91,6 @@
     TLConversationCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TLConversationCell"];
     [cell setConversation:conversation];
     [cell setBottomLineStyle:indexPath.row == self.data.count - 1 ? TLCellLineStyleFill : TLCellLineStyleDefault];
-    
     return cell;
 }
 
@@ -116,7 +116,7 @@
     if (conversation.convType == TLConversationTypePersonal) {
         TLUser *user = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:conversation.partnerID];
         if (user == nil) {
-            [TLUIUtility showAlertWithTitle:@"错误" message:@"您不存在此好友"];
+            [TLUIUtility showAlertWithTitle:@"Error" message:@"You don't have this friend."];
             return;
         }
         [chatVC setPartner:user];
@@ -124,7 +124,7 @@
     else if (conversation.convType == TLConversationTypeGroup){
         TLGroup *group = [[TLFriendHelper sharedFriendHelper] getGroupInfoByGroupID:conversation.partnerID];
         if (group == nil) {
-            [TLUIUtility showAlertWithTitle:@"错误" message:@"您不存在该讨论组"];
+            [TLUIUtility showAlertWithTitle:@"Error" message:@"You don't have this group chat."];
             return;
         }
         [chatVC setPartner:group];
@@ -158,139 +158,9 @@
                                                [cell setBottomLineStyle:TLCellLineStyleFill];
                                            }
                                        }];
-//    UITableViewRowAction *moreAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault
-//                                                                          title:conversation.isRead ? @"标为未读" : @"标为已读"
-//                                                                        handler:^(UITableViewRowAction *action, NSIndexPath *indexPath)
-//                                        {
-//                                            TLConversationCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-//                                            conversation.isRead ? [cell markAsUnread] : [cell markAsRead];
-//                                            [tableView setEditing:NO animated:YES];
-//                                        }];
-//    moreAction.backgroundColor = [UIColor colorWithRed:0.85 green:0.85 blue:0.85 alpha:1.0];
     return @[delAction];
 }
 
-//MARK: UISearchBarDelegate
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
-{
-    [self.searchVC setFriendsData:[TLFriendHelper sharedFriendHelper].friendsData];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
-}
-
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
-{
-    [self.tabBarController.tabBar setHidden:YES];
-}
-
-- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
-{
-    [self.tabBarController.tabBar setHidden:NO];
-//    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
-}
-
-- (void)searchBarBookmarkButtonClicked:(UISearchBar *)searchBar
-{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"语音搜索按钮" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles: nil];
-    [alert show];
-}
-
-- (void)p_initLiveQuery
-{
-    NSArray * keys = [self.data valueForKeyPath:@"key"];
-    
-    
-    if (_currentKeys && [_currentKeys isEqualToArray: keys] ) {
-        NSLog(@"nothing changed in keys, skipping...");
-        return;
-    }
-    
-    _currentKeys = keys;
-    
-    if (self.client) {
-        [self.client unsubscribeFromQuery:self.query];
-//        [self.client disconnect];
-        self.client = nil;
-    }
-    DLog(@"subscribed keys: %@", keys);
-    
-    
-    self.client = [[PFLiveQueryClient alloc] init];
-    
-    self.query = [PFQuery queryWithClassName:kParseClassNameMessage];
-    
-
-    [self.query whereKey:@"dialogKey" containedIn:keys];
-
-    
-    self.subscription = [self.client  subscribeToQuery:self.query withHandler:self];
-    __weak TLConversationViewController * weakSelf = self;
-    //[self.navigationItem setTitle:NSLocalizedString(@"MESSAGE", nil)];
-    
-//    self.subscription = [self.subscription addSubscribeHandler:^(PFQuery<PFObject *> * _Nonnull query) {
-//        DLog(@"Subscribed");
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [weakSelf.navigationItem setTitle:@"聊天"];
-//        });
-//
-//    }];
-//
-//    self.subscription = [self.subscription addErrorHandler:^(PFQuery<PFObject *> * _Nonnull query, NSError * _Nonnull error) {
-//        DLog(@"error occurred! %@", error.localizedDescription);
-//
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [weakSelf.navigationItem setTitle:@"聊天(未连接)"];
-//        });
-//
-//    }];
-//
-//    self.subscription = [self.subscription addUnsubscribeHandler:^(PFQuery<PFObject *> * _Nonnull query) {
-//        NSLog(@"unsubscribed");
-//    }];
-//
-//    self.subscription = [self.subscription addEnterHandler:^(PFQuery<PFObject *> * _Nonnull query, PFObject * _Nonnull object) {
-//        NSLog(@"enter");
-//    }];
-//
-//    self.subscription = [self.subscription addEventHandler:^(PFQuery<PFObject *> * _Nonnull query, PFLiveQueryEvent * _Nonnull event) {
-//        NSLog(@"event: %@", event);
-//    }];
-//
-//    self.subscription = [self.subscription addDeleteHandler:^(PFQuery<PFObject *> * _Nonnull query, PFObject * _Nonnull message) {
-//        NSLog(@"message deleted: %@ %@",message.createdAt, message.objectId);
-//    }];
-//
-//
-//    self.subscription = [self.subscription addCreateHandler:^(PFQuery<PFObject *> * _Nonnull query, PFObject * _Nonnull message) {
-//
-//
-//        [weakSelf processMessageFromServer:message bypassMine:YES];
-//
-//
-//    }];
-}
-
-# pragma mark - PFLiveQuerySubscriptionHandling
-- (void)liveQuery:(PFQuery<PFObject *> *)query didSubscribeInClient:(PFLiveQueryClient *)client {
-    DLog(@"Subscribed");
-    dispatch_async(dispatch_get_main_queue(), ^{
-        //[self.navigationItem setTitle:NSLocalizedString(@"MESSAGE", nil)];
-    });
-}
-
-- (void)liveQuery:(PFQuery<PFObject *> *)query didUnsubscribeInClient:(PFLiveQueryClient *)client {
-    
-}
-
-- (void)liveQuery:(PFQuery<PFObject *> *)query didRecieveEvent:(PFLiveQueryEvent *)event inClient:(PFLiveQueryClient *)client {
-    if (event.type == PFLiveQueryEventTypeCreated) {
-        PFObject * message = event.object;
-        [self processMessageFromServer:message bypassMine:YES];
-    }
-}
-
-- (void)liveQuery:(PFQuery<PFObject *> *)query didEncounterError:(NSError *)error inClient:(PFLiveQueryClient *)client {
-    
-}
 
 - (void)processMessageFromServer:(PFObject *)message bypassMine:(BOOL)bypassMine{
     
@@ -325,6 +195,8 @@
                                                                              type:conv.convType
                                                                              date:message.createdAt
                                                                      last_message:conv.content
+         
+                                                     noDisturb:conv.noDisturb
                                                                         localOnly:YES];
         
         [[TLMessageManager sharedInstance].conversationStore increaseUnreadNumberForConversationByUid:[TLUserHelper sharedHelper].userID key:conv.key] ;

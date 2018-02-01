@@ -128,8 +128,13 @@ static TLChatViewController *chatVC;
 }
 
 - (void)notifiButtonDown:(id)sender {
-    [[HSNetworkAdapter adapter] modifyNotificationSettingForDialog:self.conversationKey];
     self.noDisturb = !self.noDisturb;
+    [[TLMessageManager sharedInstance].conversationStore updateNoDisturbForConversation:self.noDisturb Uid:[self.user chat_userID] key:self.conversationKey];
+    if (self.noDisturb) {
+        [[Hud defaultInstance] showMessage:NSLocalizedString(@"TURN_OFF_NOTIFICATION", nil)];
+    } else {
+        [[Hud defaultInstance] showMessage:NSLocalizedString(@"TURN_ON_NOTIFICATION", nil)];
+    }
     [self setNotifiButtonImage];
 }
 

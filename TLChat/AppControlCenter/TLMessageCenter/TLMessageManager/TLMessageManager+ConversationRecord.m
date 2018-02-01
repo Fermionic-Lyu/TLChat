@@ -19,14 +19,20 @@
 {
     NSString *partnerID = message.friendID;
     NSInteger type = 0;
+    NSString *dialogKey;
     if (message.partnerType == TLPartnerTypeGroup) {
         partnerID = message.groupID;
         type = 1;
+        dialogKey = message.groupID;
+    } else {
+        dialogKey = [[TLFriendHelper sharedFriendHelper] makeDialogNameForFriend:partnerID myId:message.userID];
     }
+    
+    TLConversation *conversation = [self.conversationStore conversationByKey:dialogKey];
     
     NSString * lastMsg = [[TLFriendHelper sharedFriendHelper] formatLastMessage:message];
     
-    BOOL ok = [self.conversationStore addConversationByUid:[TLUserHelper sharedHelper].userID fid:partnerID type:type date:message.date last_message:lastMsg localOnly:NO];
+    BOOL ok = [self.conversationStore addConversationByUid:[TLUserHelper sharedHelper].userID fid:partnerID type:type date:message.date last_message:lastMsg noDisturb:conversation.noDisturb localOnly:NO];
     
     return ok;
 }

@@ -154,18 +154,20 @@ static BOOL isLoadingData = NO;
     [dialogQuery whereKey:@"key" equalTo:key];
     [dialogQuery whereKey:@"user" equalTo:[PFUser currentUser]];
     [dialogQuery orderByDescending:@"updatedAt"];
-    [dialogQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+    [dialogQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable dialog, NSError * _Nullable error) {
         BOOL localOnly = YES;
         if (error && error.code == 101) {
             localOnly = NO;
         }
         NSDate * localDeleteDate = nil;
-        if (object && object[@"localDeletedAt"]) {
-            localDeleteDate = object[@"localDeletedAt"];
-        }else{
-            
+        if (dialog && dialog[@"localDeletedAt"]) {
+            localDeleteDate = dialog[@"localDeletedAt"];
         }
         
+        BOOL noDisturb = NO;
+        if (dialog && dialog[@"noDisturb"]) {
+            noDisturb = [dialog[@"noDisturb"] boolValue];
+        }
         
         PFQuery * query = [PFQuery queryWithClassName:kParseClassNameMessage];
         DLog(@"key %@", key);
@@ -184,6 +186,7 @@ static BOOL isLoadingData = NO;
                                                                                      type:TLConversationTypePersonal
                                                                                      date:object.createdAt
                                                                              last_message:[TLMessage conversationContentForMessage: object[@"message"]]
+                                                                                noDisturb:noDisturb
                                                                                 localOnly:localOnly];
                 
             }else{
@@ -195,6 +198,8 @@ static BOOL isLoadingData = NO;
                                                                                          type:TLConversationTypePersonal
                                                                                          date:friend.date
                                                                                  last_message:@"Let's start chat"
+                     
+                                              noDisturb:noDisturb
                                                                                     localOnly:localOnly];
 //                };
             }

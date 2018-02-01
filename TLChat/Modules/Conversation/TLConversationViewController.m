@@ -6,6 +6,7 @@
 //  Copyright © 2016年 李伯坤. All rights reserved.
 //
 
+#import "TLConversationCell.h"
 #import "TLConversationViewController.h"
 #import "TLConversationViewController+Delegate.h"
 #import "TLSearchController.h"
@@ -42,12 +43,10 @@
     
     if ([TLUserHelper sharedHelper].isLogin) {
         [TLFriendHelper sharedFriendHelper]; // force a friend data load.
-        [[HSNetworkAdapter adapter] fetchNotificationSettingForConversations];
     }
     
     [[NSNotificationCenter defaultCenter] addObserverForName:kAKUserLoggedInNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
         [TLFriendHelper sharedFriendHelper]; // force a friend data load.
-        [[HSNetworkAdapter adapter] fetchNotificationSettingForConversations];
         needReloadData = YES;
         [self updateConversationData];
     }];
@@ -73,6 +72,50 @@
 
         [[TLFriendDataLoader sharedFriendDataLoader] createNewFriendDialogWithUserIdWithLatestMessage:userId completionBlock:nil];
     }
+}
+
+- (void)refreshAllConversations {
+    WS(weakSelf);
+    dispatch_group_t serviceGroup = dispatch_group_create();
+    
+    [[TLMessageManager sharedInstance] conversationRecord:^(NSArray *data) {
+        for (int i = 0; i < [data count]; i++) {
+            TLConversation *conversation = data[i];
+            NSArray * users = [conversation.key componentsSeparatedByString:@":"];
+            if (users.count > 1) {
+                NSArray * matches = [users filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != %@", [TLUserHelper sharedHelper].userID]];
+                if (matches.count > 0) {
+                    NSString * friendID = matches.firstObject;
+                    TLUser * friend = [[TLFriendHelper sharedFriendHelper] getFriendInfoByUserID:friendID];
+                    dispatch_group_enter(serviceGroup);
+                    [[TLFriendDataLoader sharedFriendDataLoader] createFriendDialogWithLatestMessage:friend completionBlock:^{
+                        [[TLMessageManager sharedInstance].conversationStore countUnreadMessages:conversation withCompletionBlock:^(NSInteger count) {
+                            dispatch_group_leave(serviceGroup);
+                        }];
+                    }];
+                }
+            }else{
+                
+                // GROUP
+                
+                TLGroup * group = [[TLFriendHelper sharedFriendHelper] getGroupInfoByGroupID:conversation.key];
+                dispatch_group_enter(serviceGroup);
+                [[TLGroupDataLoader sharedGroupDataLoader] createCourseDialogWithLatestMessage:group completionBlock:^{
+                    [[TLMessageManager sharedInstance].conversationStore countUnreadMessages:conversation withCompletionBlock:^(NSInteger count){
+                        dispatch_group_leave(serviceGroup);
+                    }];
+                }];
+            }
+        }
+        
+        dispatch_group_notify(serviceGroup, dispatch_get_main_queue(), ^{
+            if ([self.tableView.mj_header isRefreshing]) {
+                [self.tableView.mj_header endRefreshing];
+            }
+            [weakSelf updateConversationData];
+        });
+        
+    }];
 }
 
 - (void)newChatMessageArrive:(NSNotification*)notificaion {
@@ -211,18 +254,6 @@
         
     }
     return _tableView;
-}
-
-- (void)refreshAllConversations {
-    [[TLMessageManager sharedInstance] conversationRecord:^(NSArray *data) {
-        for (TLConversation *conversation in data) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"NewChatMessageReceived" object:conversation.key];
-        }
-        if ([self.tableView.mj_header isRefreshing]) {
-            [self.tableView.mj_header endRefreshing];
-        }
-        
-    }];
 }
 
 - (UIImageView *)scrollTopView

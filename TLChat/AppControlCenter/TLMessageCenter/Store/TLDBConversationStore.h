@@ -14,7 +14,7 @@
 /**
  *  新的会话（未读）
  */
-- (BOOL)addConversationByUid:(NSString *)uid fid:(NSString *)fid type:(NSInteger)type date:(NSDate *)date last_message:(NSString*)last_message localOnly:(BOOL)localOnly;
+- (BOOL)addConversationByUid:(NSString *)uid fid:(NSString *)fid type:(NSInteger)type date:(NSDate *)date last_message:(NSString*)last_message noDisturb:(BOOL)noDisturb localOnly:(BOOL)localOnly;
 
 /**
  *  更新会话状态（已读）
@@ -24,7 +24,8 @@
 - (void)increaseUnreadNumberForConversationByUid:(NSString *)uid key:(NSString *)key addNumber:(NSInteger)addNumber;
 - (void)updateLastReadDateForConversationByUid:(NSString *)uid key:(NSString *)key;
 - (void)setUnreadNumberForConversationByUid:(NSString *)uid key:(NSString *)key newUnreadCount:(NSInteger)newUnreadCount;
-    
+
+- (void)updateNoDisturbForConversation:(BOOL)noDisturb Uid:(NSString *)uid key:(NSString *)key;
 /**
  *  查询所有会话
  */

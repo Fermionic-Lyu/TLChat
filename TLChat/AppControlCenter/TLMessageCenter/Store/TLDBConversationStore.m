@@ -44,7 +44,7 @@
     return [self createTable:CONV_TABLE_NAME withSQL:sqlString];
 }
 
-- (BOOL)addConversationByUid:(NSString *)uid fid:(NSString *)fid type:(NSInteger)type date:(NSDate *)date last_message:(NSString*)last_message localOnly:(BOOL)localOnly;
+- (BOOL)addConversationByUid:(NSString *)uid fid:(NSString *)fid type:(NSInteger)type date:(NSDate *)date last_message:(NSString*)last_message noDisturb:(BOOL)noDisturb localOnly:(BOOL)localOnly;
 {
     NSString * dialogKey = @"";
     NSString * dialogName = @"";
@@ -73,7 +73,7 @@
                         last_message,
                         dialogKey,
                         [NSNumber numberWithInteger:unreadCount],
-                        @"", @"", @"", @"", @"", nil];
+                        noDisturb ? @"true" : @"false", @"", @"", @"", @"", nil];
     BOOL ok = [self excuteSQL:sqlString withArrParameter:arrPara];
     
     
@@ -99,7 +99,7 @@
             dialog[@"key"] = dialogKey;
             dialog[@"user"] = [PFUser currentUser];
             dialog[@"lastReadDate"] = [NSDate date];
-            dialog[@"noDisturb"] = @(NO);
+            dialog[@"noDisturb"] = @(noDisturb);
 
             dialog[@"name"] = dialogName;
             
@@ -139,6 +139,30 @@
             
             // TODO: last read count not right for user self sending messages.
             object[@"lastReadDate"] = [NSDate date];
+            [object saveInBackground];
+        }
+        
+    }];
+    
+    return;
+}
+
+- (void)updateNoDisturbForConversation:(BOOL)noDisturb Uid:(NSString *)uid key:(NSString *)key {
+    NSString *sqlString = [NSString stringWithFormat:SQL_UPDATE_CONV_NO_DISTURB, CONV_TABLE_NAME, noDisturb ? @"true" : @"false", uid, key];
+    
+    [self excuteSQL:sqlString withArrParameter:nil];
+    
+    // Server Data
+    
+    PFQuery * query = [PFQuery queryWithClassName:kParseClassNameDialog];
+    [query whereKey:@"user" equalTo:[PFUser currentUser]];
+    [query whereKey:@"key" equalTo:key];
+    [query orderByDescending:@"updatedAt"];
+    [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+        
+        if (object) {
+            
+            object[@"noDisturb"] = @(noDisturb);
             [object saveInBackground];
         }
         
@@ -207,6 +231,7 @@
             conversation.unreadCount = [retSet intForColumn:@"unread_count"];
             conversation.content = [retSet stringForColumn:@"last_message"];
             conversation.key = [retSet stringForColumn:@"key"];
+            conversation.noDisturb = [retSet boolForColumn:@"ext1"];
             [data addObject:conversation];
         }
         [retSet close];
@@ -243,6 +268,7 @@
             conversation.unreadCount = [retSet intForColumn:@"unread_count"];
             conversation.content = [retSet stringForColumn:@"last_message"];
             conversation.key = [retSet stringForColumn:@"key"];
+            conversation.noDisturb = [retSet boolForColumn:@"ext1"];
             [data addObject:conversation];
         }
         [retSet close];
@@ -380,7 +406,9 @@
             if (object[@"lastReadDate"] && [object[@"lastReadDate"] isLaterThanDate:laterDate]) {
                 laterDate = object[@"lastReadDate"];
             }
-            [query whereKey:@"createdAt" greaterThan:laterDate];
+            if (laterDate) {
+                [query whereKey:@"createdAt" greaterThan:laterDate];
+            }
             [query whereKey:@"sender" notEqualTo:@"ADMIN"];
             [query countObjectsInBackgroundWithBlock:^(int number, NSError * _Nullable error) {
                     [self setUnreadNumberForConversationByUid:[TLUserHelper sharedHelper].userID key:key newUnreadCount:number];
