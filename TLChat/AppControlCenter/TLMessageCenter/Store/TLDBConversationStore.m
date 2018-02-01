@@ -400,12 +400,17 @@
         [dialogQuery whereKey:@"key" equalTo:key];
         [dialogQuery getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
             NSDate *laterDate;
-            if (object && object[@"localDeletedAt"]) {
-                laterDate = object[@"localDeletedAt"];
+            if (object) {
+                if (object[@"localDeletedAt"]) {
+                    laterDate = object[@"localDeletedAt"];
+                }
+                if (object[@"lastReadDate"]) {
+                    if (!laterDate || [laterDate isEarlierThanDate:object[@"lastReadDate"]]) {
+                        laterDate = object[@"lastReadDate"];
+                    }
+                }
             }
-            if (object[@"lastReadDate"] && [object[@"lastReadDate"] isLaterThanDate:laterDate]) {
-                laterDate = object[@"lastReadDate"];
-            }
+            
             if (laterDate) {
                 [query whereKey:@"createdAt" greaterThan:laterDate];
             }

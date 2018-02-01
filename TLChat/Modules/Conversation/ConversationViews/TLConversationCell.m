@@ -246,7 +246,7 @@
 - (UILabel *)unreadLabel {
     if (!_unreadLabel) {
         _unreadLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 18.0f, 18.0f)];
-        [_unreadLabel setFont:[UIFont systemFontOfSize:12.0f]];
+        [_unreadLabel setFont:[UIFont systemFontOfSize:11.0f]];
         [_unreadLabel setTextColor:[UIColor whiteColor]];
         [_unreadLabel setTextAlignment:NSTextAlignmentCenter];
     }
