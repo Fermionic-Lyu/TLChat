@@ -15,14 +15,14 @@
 @property (strong, nonatomic) NSArray<PFObject *> *courses;
 
 + (TLGroupDataLoader *)sharedGroupDataLoader;
-
-+ (void)p_loadGroupsDataWithCompletionBlock:(void(^)(NSArray<TLUser*> *groups))completionBlock;
     
 + (NSString *)makeCourseDialogKey:(PFObject *)course;
 
 - (void)reloadCourses;
 
 - (void)resetCourses;
+
+- (NSArray<TLUser *> *)loadGroupsData;
 
 - (HSCourseInfo *)getCourseInfoByGroupID:(NSString *)groupID;
 

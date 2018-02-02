@@ -94,6 +94,7 @@ static TLFriendHelper *friendHelper = nil;
         }
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadFriendsAndGroupsData) name:kAKUserLoggedInNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadGroupData) name:@"CourseDataReady" object:nil];
  
     }
     return self;
@@ -351,39 +352,33 @@ static TLFriendHelper *friendHelper = nil;
 }
 
 - (void)reloadGroupData {
-    [self p_loadGroupsDataWithCompleetionBlcok:nil];
+    [self p_loadGroupsDataWithCompleetionBlcok:^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:kAKFriendsAndGroupDataUpdateNotification object:nil];
+    }];
 }
 
 - (void)p_loadGroupsDataWithCompleetionBlcok:(void(^)())completionBlock
 {
-    [TLGroupDataLoader p_loadGroupsDataWithCompletionBlock:^(NSArray<TLGroup *> *groups) {
-
-        self.groupsData = [groups mutableCopy];
-        
-        
+    if ([TLGroupDataLoader sharedGroupDataLoader].courses) {
+        self.groupsData = [[[TLGroupDataLoader sharedGroupDataLoader] loadGroupsData] mutableCopy];
         
         BOOL ok = [self.groupStore updateGroupsData:self.groupsData forUid:[TLUserHelper sharedHelper].userID];
         if (!ok) {
             DDLogError(@"保存群数据到数据库失败!");
         }
-        // 生成Group Icon
+            // 生成Group Icon
         for (TLGroup *group in self.groupsData) {
             [group createGroupAvatarWithCompleteAction:nil];
         }
         
- 
-
         [[TLGroupDataLoader sharedGroupDataLoader] recreateLocalDialogsForGroupsWithCompletionBlock:^{
-        
-            if (completionBlock) {
-                completionBlock();
-            }
+            
+                if (completionBlock) {
+                    completionBlock();
+                }
             
         }];
-        
-        
-        
-    }];
+    }
     
 }
 

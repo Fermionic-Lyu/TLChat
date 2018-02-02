@@ -54,7 +54,7 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             NSInteger numberRows = [self.tableView numberOfRowsInSection:0];
-            if (numberRows < [self.data count]) {
+            if (numberRows != [self.data count]) {
                 needReloadData = YES;
             }
             for (int i = 0; i < [self.data count]; i++) {
