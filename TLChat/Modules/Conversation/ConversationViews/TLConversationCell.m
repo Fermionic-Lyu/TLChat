@@ -66,11 +66,16 @@
             [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:conversation.avatarURL] placeholderImage:[UIImage imageNamed:@"default_avatar"]];
             [self.firstCharacterLabel setHidden:YES];
             break;
-        case TLConversationTypeGroup:
+        case TLConversationTypeGroup: {
             [self.avatarImageView setImage:[[TLGroupDataLoader sharedGroupDataLoader] generateGroupAvatarWithGroupName:conversation.partnerName]];
-            [self.firstCharacterLabel setText:[conversation.partnerName substringToIndex:1]];
+            NSString *firstCharacter = @"?";
+            if ([conversation.partnerName length] > 0) {
+                firstCharacter = [conversation.partnerName substringToIndex:1];
+            }
+            [self.firstCharacterLabel setText:firstCharacter];
             [self.firstCharacterLabel setHidden:NO];
             break;
+        }
         default:
             break;
     }
