@@ -31,10 +31,10 @@
         return;
     }
     _username = username;
-    if (self.remarkName.length == 0 && self.nikeName.length == 0 && self.username.length > 0) {
-        self.pinyin = username.pinyin;
-        self.pinyinInitial = username.pinyinInitial;
-    }
+//    if (self.remarkName.length == 0 && self.nikeName.length == 0 && self.username.length > 0) {
+//        self.pinyin = username.pinyin;
+//        self.pinyinInitial = username.pinyinInitial;
+//    }
 }
 
 - (void)setNikeName:(NSString *)nikeName
@@ -64,7 +64,7 @@
 #pragma mark - Getter
 - (NSString *)showName
 {
-    return self.remarkName.length > 0 ? self.remarkName : (self.nikeName.length > 0 ? self.nikeName : self.username);
+    return self.username;
 }
 
 - (TLUserDetail *)detailInfo

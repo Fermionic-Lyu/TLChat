@@ -52,6 +52,7 @@
 //    if (_message && [_message.messageID isEqualToString:message.messageID]) {
 //        return;
 //    }
+    message.showName = message.partnerType == TLPartnerTypeGroup && message.ownerTyper != TLMessageOwnerTypeSelf && message.ownerTyper != TLMessageOwnerTypeSystem;
     [self.timeLabel setText:[NSString stringWithFormat:@"  %@  ", message.date.chatTimeInfo]];
     [self.usernameLabel setText:[message.fromUser chat_username]];
     if ([message.fromUser chat_avatarPath].length > 0) {

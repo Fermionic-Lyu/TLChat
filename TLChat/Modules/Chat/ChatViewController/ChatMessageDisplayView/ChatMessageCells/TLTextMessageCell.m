@@ -37,6 +37,7 @@
 //    if (self.message && [self.message.messageID isEqualToString:message.messageID]) {
 //        return;
 //    }
+    message.showName = message.partnerType == TLPartnerTypeGroup && message.ownerTyper != TLMessageOwnerTypeSelf && message.ownerTyper != TLMessageOwnerTypeSystem;
     
     if (message.ownerTyper == TLMessageOwnerTypeSystem) {
         [self.timeLabel setText:message.text];
