@@ -64,6 +64,7 @@
         message.partnerType = TLPartnerTypeGroup;
         message.groupID = [self.partner chat_userID];
     }
+    message.showName = message.partnerType == TLPartnerTypeGroup && message.ownerTyper != TLMessageOwnerTypeSelf && message.ownerTyper != TLMessageOwnerTypeSystem;
 
     [self addToShowMessage:message];    // 添加到列表
  
