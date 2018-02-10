@@ -31,10 +31,6 @@
         return;
     }
     _username = username;
-//    if (self.remarkName.length == 0 && self.nikeName.length == 0 && self.username.length > 0) {
-//        self.pinyin = username.pinyin;
-//        self.pinyinInitial = username.pinyinInitial;
-//    }
 }
 
 - (void)setNikeName:(NSString *)nikeName
@@ -43,10 +39,6 @@
         return;
     }
     _nikeName = nikeName;
-    if (self.remarkName.length == 0 && self.nikeName.length > 0) {
-        self.pinyin = nikeName.pinyin;
-        self.pinyinInitial = nikeName.pinyinInitial;
-    }
 }
 
 - (void)setRemarkName:(NSString *)remarkName
@@ -55,10 +47,6 @@
         return;
     }
     _remarkName = remarkName;
-    if (_remarkName.length > 0) {
-        self.pinyin = remarkName.pinyin;
-        self.pinyinInitial = remarkName.pinyinInitial;
-    }
 }
 
 #pragma mark - Getter
