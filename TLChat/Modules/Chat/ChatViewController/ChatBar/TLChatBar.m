@@ -246,14 +246,14 @@
     
     [self.cameraButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.textView.mas_bottom).mas_offset(20.0f);
-        make.left.mas_equalTo(self.galleryButton.mas_right).mas_offset(20.0f);
+        make.left.mas_equalTo(self.galleryButton.mas_right).mas_offset(25.0f);
         make.height.mas_equalTo(20.0f);
         make.width.mas_equalTo(25.0f);
     }];
     
     [self.voiceButton mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self.textView.mas_bottom).mas_offset(20.0f);
-        make.left.mas_equalTo(self.cameraButton.mas_right).mas_offset(20.0f);
+        make.left.mas_equalTo(self.cameraButton.mas_right).mas_offset(25.0f);
         make.height.mas_equalTo(20.0f);
         make.width.mas_equalTo(25.0f);
     }];

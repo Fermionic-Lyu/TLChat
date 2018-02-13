@@ -17,6 +17,9 @@
 
 - (BOOL)addConversationByMessage:(TLMessage *)message
 {
+    if (message.ownerTyper == TLMessageOwnerTypeSystem) {
+        return YES;
+    }
     NSString *partnerID = message.friendID;
     NSInteger type = 0;
     NSString *dialogKey;

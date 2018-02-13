@@ -9,7 +9,7 @@
 #import "UNIVoiceChatBar.h"
 #import "TLTalkButton.h"
 
-#define UNIVoiceChatBarHeight 50.0f
+#define UNIVoiceChatBarHeight 60.0f
 
 @interface UNIVoiceChatBar ()
 
@@ -44,9 +44,9 @@
 - (void)p_addMasonry {
     
     [self.keyboardButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self).mas_offset(15.0f);
+        make.top.mas_equalTo(self).mas_offset(20.0f);
         make.left.mas_equalTo(self).mas_offset(20.0f);
-        make.bottom.mas_equalTo(self).mas_offset(-15.0f - SAFEAREA_INSETS.bottom);
+        make.bottom.mas_equalTo(self).mas_offset(-20.0f - SAFEAREA_INSETS.bottom);
         make.height.mas_equalTo(20.0f);
         make.width.mas_equalTo(25.0f);
     }];
@@ -55,7 +55,7 @@
         make.top.mas_equalTo(self).mas_offset(10.0f);
         make.left.mas_equalTo(self.keyboardButton.mas_right).mas_offset(20.0f);
         make.right.mas_equalTo(self).mas_offset(-20.0f);
-        make.height.mas_equalTo(30.0f);
+        make.height.mas_equalTo(40.0f);
     }];
 }
 
