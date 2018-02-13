@@ -367,9 +367,9 @@ static TLFriendHelper *friendHelper = nil;
             DDLogError(@"保存群数据到数据库失败!");
         }
             // 生成Group Icon
-        for (TLGroup *group in self.groupsData) {
-            [group createGroupAvatarWithCompleteAction:nil];
-        }
+//        for (TLGroup *group in self.groupsData) {
+//            [group createGroupAvatarWithCompleteAction:nil];
+//        }
         
         [[TLGroupDataLoader sharedGroupDataLoader] recreateLocalDialogsForGroupsWithCompletionBlock:^{
             

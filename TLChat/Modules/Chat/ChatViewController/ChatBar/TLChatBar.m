@@ -14,28 +14,16 @@
 #import "TLMacros.h"
 
 @interface TLChatBar () <UITextViewDelegate>
-{
-    UIImage *kVoiceImage;
-    UIImage *kVoiceImageHL;
-    UIImage *kEmojiImage;
-    UIImage *kEmojiImageHL;
-    UIImage *kMoreImage;
-    UIImage *kMoreImageHL;
-    UIImage *kKeyboardImage;
-    UIImage *kKeyboardImageHL;
-}
-
-@property (nonatomic, strong) UIButton *modeButton;
 
 @property (nonatomic, strong) UIButton *voiceButton;
 
 @property (nonatomic, strong) UITextView *textView;
 
-@property (nonatomic, strong) TLTalkButton *talkButton;
+@property (nonatomic, strong) UIButton *galleryButton;
 
-@property (nonatomic, strong) UIButton *emojiButton;
+@property (nonatomic, strong) UIButton *cameraButton;
 
-@property (nonatomic, strong) UIButton *moreButton;
+@property (nonatomic, strong) UIButton *sendButton;
 
 @end
 
@@ -44,18 +32,7 @@
 - (id)init
 {
     if (self = [super init]) {
-        [self setBackgroundColor:[UIColor colorGrayForChatBar]];
-        [self p_initImage];
-        
-        [self addSubview:self.modeButton];
-        [self addSubview:self.voiceButton];
-        [self addSubview:self.textView];
-        [self addSubview:self.talkButton];
-        [self addSubview:self.emojiButton];
-        [self addSubview:self.moreButton];
-        
-        [self p_addMasonry];
-        
+        [self initView];
         self.status = TLChatBarStatusInit;
     }
     return self;
@@ -66,6 +43,22 @@
 #ifdef DEBUG_MEMERY
     NSLog(@"dealloc ChatBar");
 #endif
+}
+
+- (void)initView {
+    [self setBackgroundColor:[UIColor whiteColor]];
+    
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [UIScreen mainScreen].bounds.size.width, 0.5f)];
+    [lineView setBackgroundColor:[UIColor colorWithHexString:@"C7C7CD"]];
+    [self addSubview:lineView];
+    
+    [self addSubview:self.textView];
+    [self addSubview:self.galleryButton];
+    [self addSubview:self.cameraButton];
+    [self addSubview:self.voiceButton];
+    [self addSubview:self.sendButton];
+    
+    [self p_addMasonry];
 }
 
 
@@ -83,6 +76,7 @@
             [_delegate chatBar:self sendText:self.textView.text];
         }
     }
+    [self.sendButton setEnabled:NO];
     [self.textView setText:@""];
     [self p_reloadTextViewWithAnimation:YES];
 }
@@ -103,13 +97,13 @@
 
 - (void)setActivity:(BOOL)activity
 {
-    _activity = activity;
-    if (activity) {
-        [self.textView setTextColor:[UIColor blackColor]];
-    }
-    else {
-        [self.textView setTextColor:[UIColor grayColor]];
-    }
+//    _activity = activity;
+//    if (activity) {
+//        [self.textView setTextColor:[UIColor blackColor]];
+//    }
+//    else {
+//        [self.textView setTextColor:[UIColor grayColor]];
+//    }
 }
 
 - (BOOL)isFirstResponder
@@ -122,8 +116,6 @@
 
 - (BOOL)resignFirstResponder
 {
-    [self.moreButton setImage:kMoreImage imageHL:kMoreImageHL];
-    [self.emojiButton setImage:kEmojiImage imageHL:kEmojiImageHL];
     if (self.status == TLChatBarStatusKeyboard) {
         [self.textView resignFirstResponder];
         self.status = TLChatBarStatusInit;
@@ -136,186 +128,46 @@
 }
 
 #pragma mark - Delegate -
-//MARK: UITextViewDelegate
+
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
 {
-    [self setActivity:YES];
     if (self.status != TLChatBarStatusKeyboard) {
         if (_delegate && [_delegate respondsToSelector:@selector(chatBar:changeStatusFrom:to:)]) {
             [self.delegate chatBar:self changeStatusFrom:self.status to:TLChatBarStatusKeyboard];
         }
-        if (self.status == TLChatBarStatusEmoji) {
-            [self.emojiButton setImage:kEmojiImage imageHL:kEmojiImageHL];
-        }
-        else if (self.status == TLChatBarStatusMore) {
-            [self.moreButton setImage:kMoreImage imageHL:kMoreImageHL];
-        }
         self.status = TLChatBarStatusKeyboard;
     }
-    return YES;
-}
-
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
-{
-    if ([text isEqualToString:@"\n"]){
-        [self sendCurrentText];
-        return NO;
-    }
-    else if (textView.text.length > 0 && [text isEqualToString:@""]) {       // delete
-        if ([textView.text characterAtIndex:range.location] == ']') {
-            NSUInteger location = range.location;
-            NSUInteger length = range.length;
-            while (location != 0) {
-                location --;
-                length ++ ;
-                char c = [textView.text characterAtIndex:location];
-                if (c == '[') {
-                    textView.text = [textView.text stringByReplacingCharactersInRange:NSMakeRange(location, length) withString:@""];
-                    [self p_reloadTextViewWithAnimation:YES];
-                    return NO;
-                }
-                else if (c == ']') {
-                    return YES;
-                }
-            }
-        }
-    }
-    
     return YES;
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
+    if ([textView.text isEqualToString:@""]) {
+        [self setTextViewPlaceHolder];
+    }
     [self p_reloadTextViewWithAnimation:YES];
+}
+
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    if ([textView.text isEqualToString:NSLocalizedString(@"TEXT_MESSAGE_PLACEHOLDER", nil)]) {
+        [self.textView setText:@""];
+        [self.textView setTextColor:[UIColor blackColor]];
+    }
 }
 
 - (void)textViewDidChange:(UITextView *)textView
 {
+    if ([textView.text isEqualToString:@""] || [textView.text isEqualToString:NSLocalizedString(@"TEXT_MESSAGE_PLACEHOLDER", nil)]) {
+        [self.sendButton setEnabled:NO];
+    } else {
+        [self.sendButton setEnabled:YES];
+    }
     [self p_reloadTextViewWithAnimation:YES];
 }
 
-#pragma mark - Event Response
-- (void)modeButtonDown
-{
-    if (self.status == TLChatBarStatusEmoji) {
-        if (_delegate && [_delegate respondsToSelector:@selector(chatBar:changeStatusFrom:to:)]) {
-            [self.delegate chatBar:self changeStatusFrom:self.status to:TLChatBarStatusInit];
-        }
-        [self.emojiButton setImage:kEmojiImage imageHL:kEmojiImageHL];
-        self.status = TLChatBarStatusInit;
-
-    }
-    else if (self.status == TLChatBarStatusMore) {
-        if (_delegate && [_delegate respondsToSelector:@selector(chatBar:changeStatusFrom:to:)]) {
-            [self.delegate chatBar:self changeStatusFrom:self.status to:TLChatBarStatusInit];
-        }
-        [self.moreButton setImage:kMoreImage imageHL:kMoreImageHL];
-        self.status = TLChatBarStatusInit;
-    }
-}
-
-static NSString *textRec = @"";
-- (void)voiceButtonDown
-{
+- (void)voiceButtonDown {
     [self.textView resignFirstResponder];
-    
-    // 开始文字输入
-    if (self.status == TLChatBarStatusVoice) {
-        if (textRec.length > 0) {
-            [self.textView setText:textRec];
-            textRec = @"";
-            [self p_reloadTextViewWithAnimation:YES];
-        }
-        if (_delegate && [_delegate respondsToSelector:@selector(chatBar:changeStatusFrom:to:)]) {
-            [self.delegate chatBar:self changeStatusFrom:self.status to:TLChatBarStatusKeyboard];
-        }
-        [self.voiceButton setImage:kVoiceImage imageHL:kVoiceImageHL];
-        [self.textView becomeFirstResponder];
-        [self.textView setHidden:NO];
-        [self.talkButton setHidden:YES];
-        self.status = TLChatBarStatusKeyboard;
-    }
-    else {          // 开始语音
-        if (self.textView.text.length > 0) {
-            textRec = self.textView.text;
-            self.textView.text = @"";
-            [self p_reloadTextViewWithAnimation:YES];
-        }
-        if (_delegate && [_delegate respondsToSelector:@selector(chatBar:changeStatusFrom:to:)]) {
-            [self.delegate chatBar:self changeStatusFrom:self.status to:TLChatBarStatusVoice];
-        }
-        if (self.status == TLChatBarStatusKeyboard) {
-            [self.textView resignFirstResponder];
-        }
-        else if (self.status == TLChatBarStatusEmoji) {
-            [self.emojiButton setImage:kEmojiImage imageHL:kEmojiImageHL];
-        }
-        else if (self.status == TLChatBarStatusMore) {
-            [self.moreButton setImage:kMoreImage imageHL:kMoreImageHL];
-        }
-        [self.talkButton setHidden:NO];
-        [self.textView setHidden:YES];
-        [self.voiceButton setImage:kKeyboardImage imageHL:kKeyboardImageHL];
-        self.status = TLChatBarStatusVoice;
-    }
-}
-
-- (void)emojiButtonDown
-{
-    // 开始文字输入
-    if (self.status == TLChatBarStatusEmoji) {
-        if (_delegate && [_delegate respondsToSelector:@selector(chatBar:changeStatusFrom:to:)]) {
-            [self.delegate chatBar:self changeStatusFrom:self.status to:TLChatBarStatusKeyboard];
-        }
-        [self.emojiButton setImage:kEmojiImage imageHL:kEmojiImageHL];
-        [self.textView becomeFirstResponder];
-        self.status = TLChatBarStatusKeyboard;
-    }
-    else {      // 打开表情键盘
-        if (_delegate && [_delegate respondsToSelector:@selector(chatBar:changeStatusFrom:to:)]) {
-            [self.delegate chatBar:self changeStatusFrom:self.status to:TLChatBarStatusEmoji];
-        }
-        if (self.status == TLChatBarStatusVoice) {
-            [self.voiceButton setImage:kVoiceImage imageHL:kVoiceImageHL];
-            [self.talkButton setHidden:YES];
-            [self.textView setHidden:NO];
-        }
-        else if (self.status == TLChatBarStatusMore) {
-            [self.moreButton setImage:kMoreImage imageHL:kMoreImageHL];
-        }
-        [self.emojiButton setImage:kKeyboardImage imageHL:kKeyboardImageHL];
-        [self.textView resignFirstResponder];
-        self.status = TLChatBarStatusEmoji;
-    }
-}
-
-- (void)moreButtonDown
-{
-    // 开始文字输入
-    if (self.status == TLChatBarStatusMore) {
-        if (_delegate && [_delegate respondsToSelector:@selector(chatBar:changeStatusFrom:to:)]) {
-            [self.delegate chatBar:self changeStatusFrom:self.status to:TLChatBarStatusKeyboard];
-        }
-        [self.moreButton setImage:kMoreImage imageHL:kMoreImageHL];
-        [self.textView becomeFirstResponder];
-        self.status = TLChatBarStatusKeyboard;
-    }
-    else {      // 打开更多键盘
-        if (_delegate && [_delegate respondsToSelector:@selector(chatBar:changeStatusFrom:to:)]) {
-            [self.delegate chatBar:self changeStatusFrom:self.status to:TLChatBarStatusMore];
-        }
-        if (self.status == TLChatBarStatusVoice) {
-            [self.voiceButton setImage:kVoiceImage imageHL:kVoiceImageHL];
-            [self.talkButton setHidden:YES];
-            [self.textView setHidden:NO];
-        }
-        else if (self.status == TLChatBarStatusEmoji) {
-            [self.emojiButton setImage:kEmojiImage imageHL:kEmojiImageHL];
-        }
-        [self.moreButton setImage:kKeyboardImage imageHL:kKeyboardImageHL];
-        [self.textView resignFirstResponder];
-        self.status = TLChatBarStatusMore;
-    }
+    [self.delegate didClickVoiceMessage:self];
 }
 
 #pragma mark - Private Methods
@@ -376,85 +228,42 @@ static NSString *textRec = @"";
 
 - (void)p_addMasonry
 {
-    [self.modeButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self);
-        make.bottom.mas_equalTo(self).mas_offset(-4);
-        make.width.mas_equalTo(0);
-    }];
-    
-    [self.voiceButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.mas_equalTo(self).mas_offset(-7-SAFEAREA_INSETS.bottom);
-        make.left.mas_equalTo(self.modeButton.mas_right).mas_offset(1);
-        make.width.mas_equalTo(38);
-    }];
     
     [self.textView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(self).mas_offset(7);
-        make.bottom.mas_equalTo(self).mas_offset(-7-SAFEAREA_INSETS.bottom);
-        make.left.mas_equalTo(self.voiceButton.mas_right).mas_offset(4);
-        make.right.mas_equalTo(self.emojiButton.mas_left).mas_offset(-4);
+        make.top.mas_equalTo(self).mas_offset(10.0f);
+        make.left.mas_equalTo(self).mas_offset(20.0f);
+        make.right.mas_equalTo(self).mas_offset(-20.0f);
         make.height.mas_equalTo(HEIGHT_CHATBAR_TEXTVIEW);
     }];
     
-    [self.talkButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.mas_equalTo(self.textView);
-        make.size.mas_equalTo(self.textView);
+    [self.galleryButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.textView.mas_bottom).mas_offset(20.0f);
+        make.bottom.mas_equalTo(self).mas_offset(-15.0f - SAFEAREA_INSETS.bottom);
+        make.left.mas_equalTo(self).mas_offset(20.0f);
+        make.height.mas_equalTo(20.0f);
+        make.width.mas_equalTo(25.0f);
     }];
     
-    [self.moreButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.and.width.mas_equalTo(self.voiceButton);
-        make.right.mas_equalTo(self).mas_offset(-1);
+    [self.cameraButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.textView.mas_bottom).mas_offset(20.0f);
+        make.left.mas_equalTo(self.galleryButton.mas_right).mas_offset(20.0f);
+        make.height.mas_equalTo(20.0f);
+        make.width.mas_equalTo(25.0f);
     }];
     
-    [self.emojiButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.and.width.mas_equalTo(self.voiceButton);
-        make.right.mas_equalTo(self.moreButton.mas_left);
+    [self.voiceButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.mas_equalTo(self.textView.mas_bottom).mas_offset(20.0f);
+        make.left.mas_equalTo(self.cameraButton.mas_right).mas_offset(20.0f);
+        make.height.mas_equalTo(20.0f);
+        make.width.mas_equalTo(25.0f);
     }];
-}
-
-- (void)p_initImage
-{
-    kVoiceImage = [UIImage imageNamed:@"chat_toolbar_voice"];
-    kVoiceImageHL = [UIImage imageNamed:@"chat_toolbar_voice_HL"];
-    kEmojiImage = [UIImage imageNamed:@"chat_toolbar_emotion"];
-    kEmojiImageHL = [UIImage imageNamed:@"chat_toolbar_emotion_HL"];
-    kMoreImage = [UIImage imageNamed:@"chat_toolbar_more"];
-    kMoreImageHL = [UIImage imageNamed:@"chat_toolbar_more_HL"];
-    kKeyboardImage = [UIImage imageNamed:@"chat_toolbar_keyboard"];
-    kKeyboardImageHL = [UIImage imageNamed:@"chat_toolbar_keyboard_HL"];
-}
-
-- (void)drawRect:(CGRect)rect
-{
-    [super drawRect:rect];
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetLineWidth(context, 0.5);
-    CGContextSetStrokeColorWithColor(context, [UIColor colorGrayLine].CGColor);
-    CGContextBeginPath(context);
-    CGContextMoveToPoint(context, 0, 0);
-    CGContextAddLineToPoint(context, SCREEN_WIDTH, 0);
-    CGContextStrokePath(context);
-}
-
-#pragma mark - Getter
-- (UIButton *)modeButton
-{
-    if (_modeButton == nil) {
-        _modeButton = [[UIButton alloc] init];
-        [_modeButton setImage:[UIImage imageNamed:@"chat_toolbar_texttolist"] imageHL:[UIImage imageNamed:@"chat_toolbar_texttolist_HL"]];
-        [_modeButton addTarget:self action:@selector(modeButtonDown) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _modeButton;
-}
-
-- (UIButton *)voiceButton
-{
-    if (_voiceButton == nil) {
-        _voiceButton = [[UIButton alloc] init];
-        [_voiceButton setImage:kVoiceImage imageHL:kVoiceImageHL];
-        [_voiceButton addTarget:self action:@selector(voiceButtonDown) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _voiceButton;
+    
+    [self.sendButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(20.0f);
+        make.width.mas_equalTo(35.0f);
+        make.right.mas_equalTo(self).mas_offset(-20.0f);
+        make.bottom.mas_equalTo(self).mas_offset(-15.0f - SAFEAREA_INSETS.bottom);
+    }];
 }
 
 - (UITextView *)textView
@@ -462,67 +271,128 @@ static NSString *textRec = @"";
     if (_textView == nil) {
         _textView = [[UITextView alloc] init];
         [_textView setFont:[UIFont systemFontOfSize:16.0f]];
-        [_textView setReturnKeyType:UIReturnKeySend];
-        [_textView.layer setMasksToBounds:YES];
-        [_textView.layer setBorderWidth:BORDER_WIDTH_1PX];
-        [_textView.layer setBorderColor:[UIColor colorWithWhite:0.0 alpha:0.3].CGColor];
-        [_textView.layer setCornerRadius:4.0f];
         [_textView setDelegate:self];
         [_textView setScrollsToTop:NO];
+        [self setTextViewPlaceHolder];
     }
     return _textView;
 }
 
-- (TLTalkButton *)talkButton
-{
-    if (_talkButton == nil) {
-        _talkButton = [[TLTalkButton alloc] init];
-        [_talkButton setHidden:YES];
-        __weak typeof(self) weakSelf = self;
-        [_talkButton setTouchBeginAction:^{
-            if (weakSelf.delegate && [weakSelf.delegate respondsToSelector:@selector(chatBarStartRecording:)]) {
-                [weakSelf.delegate chatBarStartRecording:weakSelf];
-            }
-        } willTouchCancelAction:^(BOOL cancel) {
-            if (weakSelf.delegate && [weakSelf.delegate respondsToSelector:@selector(chatBarWillCancelRecording:cancel:)]) {
-                [weakSelf.delegate chatBarWillCancelRecording:weakSelf cancel:cancel];
-            }
-        } touchEndAction:^{
-            if (weakSelf.delegate && [weakSelf.delegate respondsToSelector:@selector(chatBarFinishedRecoding:)]) {
-                [weakSelf.delegate chatBarFinishedRecoding:weakSelf];
-            }
-        } touchCancelAction:^{
-            if (weakSelf.delegate && [weakSelf.delegate respondsToSelector:@selector(chatBarDidCancelRecording:)]) {
-                [weakSelf.delegate chatBarDidCancelRecording:weakSelf];
-            }
-        }];
-    }
-    return _talkButton;
+- (void)setTextViewPlaceHolder {
+    [self.textView setText:NSLocalizedString(@"TEXT_MESSAGE_PLACEHOLDER", nil)];
+    [self.textView setTextColor:[UIColor lightGrayColor]];
 }
 
-- (UIButton *)emojiButton
-{
-    if (_emojiButton == nil) {
-        _emojiButton = [[UIButton alloc] init];
-        [_emojiButton setImage:kEmojiImage imageHL:kEmojiImageHL];
-        [_emojiButton addTarget:self action:@selector(emojiButtonDown) forControlEvents:UIControlEventTouchUpInside];
+- (UIButton *)galleryButton {
+    if (!_galleryButton) {
+        _galleryButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_galleryButton setImage:[UIImage imageNamed:@"chat_toolbar_gallery"] imageHL:[UIImage imageNamed:@"chat_toolbar_gallery_HL"]];
+        [_galleryButton addTarget:self action:@selector(chatBarButtonDown:) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _emojiButton;
+    return _galleryButton;
 }
 
-- (UIButton *)moreButton
-{
-    if (_moreButton == nil) {
-        _moreButton = [[UIButton alloc] init];
-        [_moreButton setImage:kMoreImage imageHL:kMoreImageHL];
-        [_moreButton addTarget:self action:@selector(moreButtonDown) forControlEvents:UIControlEventTouchUpInside];
+- (UIButton *)cameraButton {
+    if (!_cameraButton) {
+        _cameraButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_cameraButton setImage:[UIImage imageNamed:@"chat_toolbar_camera"] imageHL:[UIImage imageNamed:@"chat_toolbar_camera_HL"]];
+        [_cameraButton addTarget:self action:@selector(chatBarButtonDown:) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _moreButton;
+    return _cameraButton;
 }
+
+- (UIButton *)voiceButton
+{
+    if (_voiceButton == nil) {
+        _voiceButton = [[UIButton alloc] init];
+        [_voiceButton setImage:[UIImage imageNamed:@"chat_toolbar_voice"] imageHL:[UIImage imageNamed:@"chat_toolbar_voice_HL"]];
+        [_voiceButton addTarget:self action:@selector(voiceButtonDown) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _voiceButton;
+}
+
+- (UIButton *)sendButton {
+    if (!_sendButton) {
+        _sendButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        [_sendButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"SEND", nil) attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Helvetica-Bold" size:14.0f], NSForegroundColorAttributeName:kEmerald}] forState:UIControlStateNormal];
+        [_sendButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"SEND", nil) attributes:@{NSFontAttributeName:[UIFont fontWithName:@"Helvetica-Bold" size:14.0f], NSForegroundColorAttributeName:[UIColor colorWithHexString:@"EFEFF4"]}] forState:UIControlStateDisabled];
+        [_sendButton addTarget:self action:@selector(sendCurrentText) forControlEvents:UIControlEventTouchUpInside];
+        [_sendButton setEnabled:NO];
+    }
+    return _sendButton;
+}
+
 
 - (NSString *)curText
 {
     return self.textView.text;
+}
+
+
+- (void)chatBarButtonDown:(UIButton *)button {
+    if (button == self.galleryButton) {
+        [self.delegate didClickGallery:self];
+    } else if (button == self.cameraButton) {
+        [self.delegate didClickCamera:self];
+    }
+}
+
+- (void)showInView:(UIView *)view withAnimation:(BOOL)animation {
+    if (_isShow) {
+        return;
+    }
+    
+    _isShow = YES;
+    [self mas_remakeConstraints:^(MASConstraintMaker *make) {
+        make.left.and.right.mas_equalTo(view);
+        make.bottom.mas_equalTo(view).mas_offset(self.frame.size.height);
+    }];
+    [view layoutIfNeeded];
+    
+    if (animation) {
+        [UIView animateWithDuration:0.3 animations:^{
+            [self mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.bottom.mas_equalTo(view);
+            }];
+            [view layoutIfNeeded];
+        } completion:^(BOOL finished) {
+            
+        }];
+    } else {
+        [self mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.bottom.mas_equalTo(view);
+        }];
+        [view layoutIfNeeded];
+    }
+}
+
+- (void)dismissWithAnimation:(BOOL)animation withCompletionBlock:(void (^)())completionBlock {
+    if (!_isShow) {
+        if (!animation) {
+            [self removeFromSuperview];
+        }
+        return;
+    }
+    _isShow = NO;
+    if (animation) {
+        [UIView animateWithDuration:0.3 animations:^{
+            [self mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.bottom.mas_equalTo(self.superview).mas_offset(self.frame.size.height);
+            }];
+            [self.superview layoutIfNeeded];
+        } completion:^(BOOL finished) {
+            [self removeFromSuperview];
+            if (completionBlock) {
+                completionBlock();
+            }
+        }];
+    } else {
+        [self removeFromSuperview];
+        if (completionBlock) {
+            completionBlock();
+        }
+    }
+    
 }
 
 @end

@@ -17,6 +17,7 @@
 #import "TLMessageManager+MessageRecord.h"
 
 #import "TLChatBar.h"
+#import "UNIVoiceChatBar.h"
 #import "TLMoreKeyboardDelegate.h"
 
 #import "TLChatUserProtocol.h"
@@ -42,6 +43,8 @@
 
 /// 聊天输入栏
 @property (nonatomic, strong) TLChatBar *chatBar;
+
+@property (nonatomic, strong) UNIVoiceChatBar *voiceChatBar;
 
 /// emoji展示view
 @property (nonatomic, strong) TLEmojiDisplayView *emojiDisplayView;

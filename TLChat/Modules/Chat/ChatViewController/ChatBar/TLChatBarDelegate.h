@@ -27,6 +27,11 @@
  */
 - (void)chatBar:(TLChatBar *)chatBar sendText:(NSString *)text;
 
+- (void)didClickGallery:(TLChatBar *)chatBar;
+
+- (void)didClickCamera:(TLChatBar *)chatBar;
+
+- (void)didClickVoiceMessage:(TLChatBar *)chatBar;
 
 // 录音控制 
 - (void)chatBarStartRecording:(TLChatBar *)chatBar;

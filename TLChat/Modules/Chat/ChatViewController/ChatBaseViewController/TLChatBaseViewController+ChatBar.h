@@ -10,7 +10,7 @@
 #import "TLMoreKeyboard.h"
 #import "TLEmojiKeyboard.h"
 
-@interface TLChatBaseViewController (ChatBar) <TLChatBarDelegate, TLKeyboardDelegate, TLEmojiKeyboardDelegate>
+@interface TLChatBaseViewController (ChatBar) <TLChatBarDelegate, UNIVoiceChatBarDelegate, TLKeyboardDelegate, TLEmojiKeyboardDelegate>
 
 /// 表情键盘
 @property (nonatomic, strong, readonly) TLEmojiKeyboard *emojiKeyboard;

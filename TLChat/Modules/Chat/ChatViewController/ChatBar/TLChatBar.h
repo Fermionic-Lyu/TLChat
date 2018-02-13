@@ -20,6 +20,8 @@
 /// 是否激活状态（浏览个性表情时应该设置为NO）
 @property (nonatomic, assign) BOOL activity;
 
+@property (nonatomic, assign) BOOL isShow;
+
 /**
  *  添加EmojiB表情String
  */
@@ -34,5 +36,8 @@
  *  删除最后一个字符
  */
 - (void)deleteLastCharacter;
+
+- (void)showInView:(UIView *)view withAnimation:(BOOL)animation;
+- (void)dismissWithAnimation:(BOOL)animation withCompletionBlock:(void (^)())completionBlock;
 
 @end

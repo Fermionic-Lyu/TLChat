@@ -106,7 +106,7 @@
 {
     if (_titleLabel == nil) {
         _titleLabel = [[UILabel alloc] init];
-        [_titleLabel setFont:[UIFont boldSystemFontOfSize:16.0f]];
+        [_titleLabel setFont:[UIFont boldSystemFontOfSize:14.0f]];
         [_titleLabel setTextColor:[UIColor colorWithRed:0.3 green:0.3 blue:0.3 alpha:1.0]];
         [_titleLabel setTextAlignment:NSTextAlignmentCenter];
         [_titleLabel setText:self.normalTitle];

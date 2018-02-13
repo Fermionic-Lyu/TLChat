@@ -41,6 +41,8 @@
     
     [self.view addSubview:self.messageDisplayView];
     [self.view addSubview:self.chatBar];
+    self.chatBar.isShow = YES;
+    self.voiceChatBar.isShow = NO;
     
     [self p_addMasonry];
 }
@@ -564,6 +566,14 @@
         [_chatBar setDelegate:self];
     }
     return _chatBar;
+}
+
+- (UNIVoiceChatBar *)voiceChatBar {
+    if (!_voiceChatBar) {
+        _voiceChatBar = [[UNIVoiceChatBar alloc] init];
+        [_voiceChatBar setDelegate:self];
+    }
+    return _voiceChatBar;
 }
 
 - (TLEmojiDisplayView *)emojiDisplayView

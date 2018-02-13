@@ -207,6 +207,73 @@
     [[TLAudioRecorder sharedRecorder] cancelRecording];
 }
 
+- (void)didClickGallery:(TLChatBar *)chatBar {
+    UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+    [imagePickerController setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+    
+    WS(weakSelf);
+    [HSCommon checkPhotoLibraryPermissionWithFinishBlock:^(BOOL ok) {
+        if (ok) {
+            [self presentViewController:imagePickerController animated:YES completion:nil];
+            [imagePickerController.rac_imageSelectedSignal subscribeNext:^(id x) {
+                [imagePickerController dismissViewControllerAnimated:YES completion:^{
+                    UIImage *image = [x objectForKey:UIImagePickerControllerOriginalImage];
+                    [weakSelf sendImageMessage:image];
+                }];
+            } completed:^{
+                [imagePickerController dismissViewControllerAnimated:YES completion:nil];
+            }];
+        }
+    }];
+    
+}
+
+- (void)didClickCamera:(TLChatBar *)chatBar {
+    UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+    
+    WS(weakSelf);
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        [imagePickerController setSourceType:UIImagePickerControllerSourceTypeCamera];
+        [HSCommon checkCameraPermissionWithFinishBlock:^(BOOL ok) {
+            if (ok) {
+                [self presentViewController:imagePickerController animated:YES completion:nil];
+                [imagePickerController.rac_imageSelectedSignal subscribeNext:^(id x) {
+                    [imagePickerController dismissViewControllerAnimated:YES completion:^{
+                        UIImage *image = [x objectForKey:UIImagePickerControllerOriginalImage];
+                        [weakSelf sendImageMessage:image];
+                    }];
+                } completed:^{
+                    [imagePickerController dismissViewControllerAnimated:YES completion:nil];
+                }];
+            }
+        }];
+    } else {
+        [TLUIUtility showAlertWithTitle:NSLocalizedString(@"ERROR", nil) message:NSLocalizedString(@"CAMERA_INITIALIZATION_FAILED", nil)];
+        return;
+    }
+    
+}
+
+- (void)didClickVoiceMessage:(TLChatBar *)chatBar {
+    [self.chatBar dismissWithAnimation:YES withCompletionBlock:^{
+        [self.view addSubview:self.voiceChatBar];
+        [self.messageDisplayView mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.bottom.mas_equalTo(self.voiceChatBar.mas_top);
+        }];
+        [self.voiceChatBar showInView:self.view withAnimation:YES];
+    }];
+}
+
+- (void)returnToNormalChatBar {
+    [self.voiceChatBar dismissWithAnimation:YES withCompletionBlock:^{
+        [self.view addSubview:self.chatBar];
+        [self.messageDisplayView mas_updateConstraints:^(MASConstraintMaker *make) {
+            make.bottom.mas_equalTo(self.chatBar.mas_top);
+        }];
+        [self.chatBar showInView:self.view withAnimation:YES];
+    }];
+}
+
 //MARK: - chatBar状态切换
 - (void)chatBar:(TLChatBar *)chatBar changeStatusFrom:(TLChatBarStatus)fromStatus to:(TLChatBarStatus)toStatus
 {
