@@ -197,8 +197,8 @@
 
 - (UIImageView *)badgeIcon {
     if (!_badgeIcon) {
-        _badgeIcon = [[UIImageView alloc] initWithFrame:CGRectMake(45.0f, 50.0f, 15.0f, 15.0f)];
-        [_badgeIcon setImage:[UIImage imageNamed:@"tutor_icon"]];
+        _badgeIcon = [[UIImageView alloc] initWithFrame:CGRectMake(14.0f, 53.0f, 42.0f, 12.0f)];
+        [_badgeIcon setImage:[UIImage imageNamed:@"tutor_badge_2"]];
     }
     return _badgeIcon;
 }

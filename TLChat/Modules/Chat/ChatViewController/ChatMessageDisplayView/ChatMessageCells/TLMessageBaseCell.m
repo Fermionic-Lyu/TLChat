@@ -230,7 +230,7 @@
 - (UIImageView *)badgeIcon {
     if (!_badgeIcon) {
         _badgeIcon = [[UIImageView alloc] init];
-        [_badgeIcon setImage:[UIImage imageNamed:@"tutor_icon"]];
+        [_badgeIcon setImage:[UIImage imageNamed:@"tutor_badge_1"]];
     }
     return _badgeIcon;
 }
