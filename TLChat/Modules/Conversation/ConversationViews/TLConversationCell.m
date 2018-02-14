@@ -34,6 +34,8 @@
 
 @property (nonatomic, strong) UILabel *unreadLabel;
 
+@property (nonatomic, strong) UIImageView *badgeIcon;
+
 @end
 
 @implementation TLConversationCell
@@ -50,6 +52,7 @@
         [self.contentView addSubview:self.timeLabel];
         [self.contentView addSubview:self.remindImageView];
         [self.contentView addSubview:self.redPointView];
+        [self.contentView addSubview:self.badgeIcon];
         
         [self p_addMasonry];
     }
@@ -62,10 +65,16 @@
     _conversation = conversation;
     
     switch (conversation.convType) {
-        case TLConversationTypePersonal:
+        case TLConversationTypePersonal: {
             [self.avatarImageView sd_setImageWithURL:[NSURL URLWithString:conversation.avatarURL] placeholderImage:[UIImage imageNamed:@"default_avatar"]];
             [self.firstCharacterLabel setHidden:YES];
+            [[HSNetworkAdapter adapter] getUserDetailInfoWithUserId:conversation.partnerID finishBlock:^(HSStudentUserInfo *studUserInfo) {
+                [self.badgeIcon setHidden:!studUserInfo.isTutor];
+            } failed:^(NSError *error) {
+                [self.badgeIcon setHidden:YES];
+            }];
             break;
+        }
         case TLConversationTypeGroup: {
             [self.avatarImageView setImage:[[TLGroupDataLoader sharedGroupDataLoader] generateGroupAvatarWithGroupName:conversation.partnerName]];
             NSString *firstCharacter = @"?";
@@ -74,11 +83,13 @@
             }
             [self.firstCharacterLabel setText:firstCharacter];
             [self.firstCharacterLabel setHidden:NO];
+            [self.badgeIcon setHidden:YES];
             break;
         }
         default:
             break;
     }
+    
     
     [self.usernameLabel setText:conversation.partnerName];
     [self.detailLabel setText:conversation.content];
@@ -182,6 +193,14 @@
         [_avatarImageView setContentMode:UIViewContentModeScaleAspectFill];
     }
     return _avatarImageView;
+}
+
+- (UIImageView *)badgeIcon {
+    if (!_badgeIcon) {
+        _badgeIcon = [[UIImageView alloc] initWithFrame:CGRectMake(45.0f, 50.0f, 15.0f, 15.0f)];
+        [_badgeIcon setImage:[UIImage imageNamed:@"tutor_icon"]];
+    }
+    return _badgeIcon;
 }
 
 - (UILabel *)firstCharacterLabel {

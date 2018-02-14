@@ -24,6 +24,8 @@
 
 @property (nonatomic, strong) UIImageView *failureView;
 
+@property (nonatomic, strong) UIImageView *badgeIcon;
+
 @property (nonatomic, strong) TLMessage *message;
 
 /**

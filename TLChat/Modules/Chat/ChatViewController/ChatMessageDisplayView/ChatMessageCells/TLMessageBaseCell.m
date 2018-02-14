@@ -38,6 +38,7 @@
         [self setSelectionStyle:UITableViewCellSelectionStyleNone];
         [self.contentView addSubview:self.timeLabel];
         [self.contentView addSubview:self.avatarButton];
+        [self.contentView addSubview:self.badgeIcon];
         [self.contentView addSubview:self.usernameLabel];
         [self.contentView addSubview:self.messageBackgroundView];
         [self.contentView addSubview:self.failureView];
@@ -53,6 +54,11 @@
 //        return;
 //    }
     message.showName = message.partnerType == TLPartnerTypeGroup && message.ownerTyper != TLMessageOwnerTypeSelf && message.ownerTyper != TLMessageOwnerTypeSystem;
+    [[HSNetworkAdapter adapter] getUserDetailInfoWithUserId:[message.fromUser chat_userID] finishBlock:^(HSStudentUserInfo *studUserInfo) {
+        [self.badgeIcon setHidden:!studUserInfo.isTutor];
+    } failed:^(NSError *error) {
+        [self.badgeIcon setHidden:YES];
+    }];
     [self.timeLabel setText:[NSString stringWithFormat:@"  %@  ", message.date.chatTimeInfo]];
     [self.usernameLabel setText:[message.fromUser chat_username]];
     if ([message.fromUser chat_avatarPath].length > 0) {
@@ -85,6 +91,12 @@
             else {
                 make.left.mas_equalTo(self.contentView).mas_offset(AVATAR_SPACE_X);
             }
+        }];
+    
+        [self.badgeIcon mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.width.and.height.mas_equalTo(15.0f);
+            make.right.mas_equalTo(self.avatarButton).mas_offset(5.0f);
+            make.bottom.mas_equalTo(self.avatarButton);
         }];
         
         // 用户名
@@ -213,6 +225,14 @@
         [_avatarButton addTarget:self action:@selector(avatarButtonDown:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _avatarButton;
+}
+
+- (UIImageView *)badgeIcon {
+    if (!_badgeIcon) {
+        _badgeIcon = [[UIImageView alloc] init];
+        [_badgeIcon setImage:[UIImage imageNamed:@"tutor_icon"]];
+    }
+    return _badgeIcon;
 }
 
 - (UILabel *)usernameLabel
