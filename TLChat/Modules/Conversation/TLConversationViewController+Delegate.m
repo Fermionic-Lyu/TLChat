@@ -60,7 +60,7 @@
             for (int i = 0; i < [self.data count]; i++) {
                 TLConversationCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
                 TLConversation *conversation = self.data[i];
-                if ([cell.conversation.partnerID isEqualToString:conversation.partnerID]) {
+                if ([cell.conversation.partnerID isEqualToString:conversation.partnerID] && conversation.convType == TLConversationTypePersonal) {
                     [cell setConversationWithOutReloadingAvatar:conversation];
                 } else {
                     [cell setConversation:conversation];

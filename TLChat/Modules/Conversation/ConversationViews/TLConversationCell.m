@@ -108,6 +108,16 @@
 - (void)setConversationWithOutReloadingAvatar:(TLConversation *)conversation {
     _conversation = conversation;
     
+    if (conversation.convType == TLConversationTypePersonal) {
+        [[HSNetworkAdapter adapter] getUserDetailInfoWithUserId:conversation.partnerID finishBlock:^(HSStudentUserInfo *studUserInfo) {
+            [self.badgeIcon setHidden:!studUserInfo.isTutor];
+        } failed:^(NSError *error) {
+            [self.badgeIcon setHidden:YES];
+        }];
+    } else if (conversation.convType == TLConversationTypeGroup) {
+        [self.badgeIcon setHidden:YES];
+    }
+    
     [self.usernameLabel setText:conversation.partnerName];
     [self.detailLabel setText:conversation.content];
     [self.timeLabel setText:conversation.date.conversaionTimeInfo];
