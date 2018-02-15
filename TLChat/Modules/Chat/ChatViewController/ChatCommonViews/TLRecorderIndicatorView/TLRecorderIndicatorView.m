@@ -81,7 +81,7 @@
 - (void)setVolume:(CGFloat)volume
 {
     _volume = volume;
-    NSInteger picId = 10 * (volume < 0 ? 0 : (volume > 1.0 ? 1.0 : volume));
+    NSInteger picId = 1 + 7 * (volume < 0 ? 0 : (volume > 1.0 ? 1.0 : volume));
     picId = picId > 8 ? 8 : picId;
     [self.volumeImageView setImage:[UIImage imageNamed:[NSString stringWithFormat:@"chat_record_signal_%ld", (long)picId]]];
 }

@@ -58,7 +58,7 @@
     __weak typeof(self) weakSelf = self;
     self.timer = [NSTimer scheduledTimerWithTimeInterval:0.5 block:^(NSTimer *timer) {
         [weakSelf.recorder updateMeters];
-        _audioMonitorResults = pow(10, (0.025 * [weakSelf.recorder peakPowerForChannel:0]));
+        _audioMonitorResults = pow(10,(0.025 * [weakSelf.recorder peakPowerForChannel:0]));
         if (_audioMonitorResults > 1.0f) {
             _audioMonitorResults = 1.0f;
         }
