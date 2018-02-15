@@ -62,7 +62,7 @@
 - (UIButton *)keyboardButton {
     if (!_keyboardButton) {
         _keyboardButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_keyboardButton setImage:[UIImage imageNamed:@"chat_toolbar_keyboard"] imageHL:[UIImage imageNamed:@"chat_toolbar_keyboard_HK"]];
+        [_keyboardButton setImage:[UIImage imageNamed:@"chat_toolbar_keyboard"] imageHL:[UIImage imageNamed:@"chat_toolbar_keyboard_HL"]];
         [_keyboardButton addTarget:self action:@selector(keyboardButtonDown:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _keyboardButton;

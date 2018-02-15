@@ -41,6 +41,7 @@
     
     [self.view addSubview:self.messageDisplayView];
     [self.view addSubview:self.chatBar];
+    
     self.chatBar.isShow = YES;
     self.voiceChatBar.isShow = NO;
     
